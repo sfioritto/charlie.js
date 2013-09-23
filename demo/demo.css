@@ -24,36 +24,64 @@ h2 {
     font-size: 2rem;
 }
 
-#slides > *{
+#slides > div {
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 150px;
     margin: 0;
-    visibility: hidden;
+}
+
+#slides > div > h2:first-of-type{
+    opacity: 0;
+}
+
+.circle {
+    border: 1px solid #eee;
+    border-radius: 50%;
+    width: 5px;
+    height: 5px;
+    opacity: 0;
+    margin: 0 auto;
 }
 
 .fade {
 	-webkit-animation-name: fade;
-	-webkit-animation-duration: 10s;
+	-webkit-animation-duration: 4s;
 	-webkit-animation-timing-function: linear;
 	-webkit-animation-iteration-count: 1;
 	-webkit-animation-direction: normal;
     -webkit-animation-fill-mode: forwards;
-    -webkit-animation-delay: -8s;
-    visibility: visible !important;
 }
 
 @-webkit-keyframes fade {
    0% {
-       bottom: 0;
-   }
-
-   90% {
-       bottom: 200px;
+       opacity: 1;
    }
 
    100% {
-       bottom: 1000px;
+       opacity: 0;
+   }
+}
+
+.grow {
+	-webkit-animation-name: grow;
+	-webkit-animation-duration: 4s;
+	-webkit-animation-timing-function: linear;
+	-webkit-animation-iteration-count: 1;
+	-webkit-animation-direction: normal;
+    -webkit-animation-fill-mode: forwards;
+    opacity: 1 !important;
+}
+
+@-webkit-keyframes grow {
+   0% {
+       width: 5px;
+       height: 5px;
+   }
+
+   100% {
+       width: 50px;
+       height: 50px;
    }
 }

@@ -144,6 +144,14 @@
                     me.running.push(animation);
                 });
             }
+
+            /*clean up any animations that have finished*/
+            var flattened = _.flatten(_.values(me.timeModel));
+            _.forEach(flattened, function(node) {
+                if (videoTime > node.endsAt) {
+                    node.animation.element.classList.remove(node.animation.name);
+                }
+            });
         },
 
         seek: (function(){

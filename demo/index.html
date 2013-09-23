@@ -13,19 +13,59 @@
   </head>
 
   <body>
+<video id="video" controls="" preload="none" poster="http://media.w3.org/2010/05/sintel/poster.png" muted>
+      <source id="mp4" src="http://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
+      <source id="webm" src="http://media.w3.org/2010/05/sintel/trailer.webm" type="video/webm">
+      <source id="ogv" src="http://media.w3.org/2010/05/sintel/trailer.ogv" type="video/ogg">
+      <p>Your user agent does not support the HTML5 Video element.</p>
+    </video>
 
-<video id="video" src="http://vid.ly/4m4e2n?content=video" controls="" preload="none" muted>
+<!-- vidly example
+<video id="video" src="http://vid.ly/4m4e2n?content=video" controls="" preload="none" muted> -->
+
 <p>Your browser does not support the HTML5 Video element.</p>
 </video>
 
     <div id="slides">
-      <h2 class="animated" data-animations="fade" data-times="0">First slide.</h2>
-      <h2 class="animated" data-animations="fade" data-times="10">Second slide.</h2>
-      <h2 class="animated" data-animations="fade" data-times="20">Third slide</h2>
-      <h2 class="animated" data-animations="fade" data-times="30">Fourth slide</h2>
-      <h2 class="animated" data-animations="fade" data-times="40">Fifth slide</h2>
-      <h2 class="animated" data-animations="fade" data-times="52">Sixth slide</h2>
-      <h2 class="animated" data-animations="fade" data-times="64">Seventh slide</h2>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="0">One</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="0"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="4">Two</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="4"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="8">Three</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="8"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="12">Four</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="12"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="16">Five</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="16"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="20">Six</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="20"></h2>
+      </div>
+      
+      <div>
+        <h2 class="animated" data-animations="fade" data-times="24">Seven</h2>
+        <h2 class="animated circle" data-animations="grow" data-times="24"></h2>
+      </div>
+      
+    </div>
+    <div id="count">
+
     </div>
     
     <script src="charlie.js"></script>
