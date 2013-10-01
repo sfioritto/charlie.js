@@ -1,6 +1,10 @@
 (function(){
 
-    
+    /* 
+     * requires: dataset, classlist, getElementsByClassName
+     */
+
+ 
     window.sync = {};
     var sync = window.sync;
 
@@ -14,19 +18,26 @@
         _.forEach(
             document.getElementsByClassName("animated"),
             function(element) {
+
                 /*
                  * Creates an object of animation name: time, e.g.
                  * 
-                 * { element: domElement,
-                 *   swoopy: 6000,
-                 *   swirly: 9000 }
-                 * 
+                 * { swoopy: [ 
+                 *    { element: domElement,
+                 *      time: 6522 },
+                 *    { element: anotherElement,
+                 *      time: 7834 }]
+                 * }
                  */
 
                 var names = _.map(
-                    element.dataset.animations.split(","),
-                    function(name){ return name.replace(/\s+/, ""); });
-                times = element.dataset.times.split(","),
+                    element.dataset.animations.split(","), //the animation names
+                    function(name){ return name.replace(/\s+/, ""); }), //remove whitespace
+
+                times = _.map(
+                    element.dataset.times.split(","), //get times
+                    function(time){ return time.replace(/\s+/, ""); }); //remove whitespace
+
                 tuples = _.zip(names, times);
                 
                 _.forEach(tuples, function(tuple){
@@ -233,8 +244,10 @@
         },
 
         resumeAnimations: function(){
+
             var me = this,
             animation;
+
             while (animation = me.paused.pop()){
                 animation.element.style.webkitAnimationPlayState = "running";
                 animation.element.style.mozAnimationPlayState = "running";
@@ -261,7 +274,7 @@
 
             createAnimations = function(me, cssAnimations, startTimes){
 
-                _.forEach(_.keys(startTimes), 
+                _.forEach(_.keys(startTimes),
                           function(name){
                               
                               var keyframe = cssAnimations.keyframes[name],
@@ -285,7 +298,7 @@
                           });
             },
 
-            createTimeModel = function(me, animations){
+            createTimeModel = function(me, animations) {
 
                 var nodes = me.timeModel;
 
@@ -295,7 +308,7 @@
                         startsAt: animation.startTime,
                         endsAt: animation.startTime + duration,
                         duration: duration,
-                        animation: animation 
+                        animation: animation
                     };
 
                     nodes[timeNode.startsAt] =  nodes[timeNode.startsAt] || [];
