@@ -75,6 +75,9 @@
 
     /************************************************************************
      * CSSAnimations
+     * 
+     * Basically a bucket for holding keyframes and stylesheet rules
+     * for animations.
      */
 
     var CSSAnimations = function(keyframes, styles){
@@ -157,8 +160,7 @@
             }
 
             /*clean up any animations that have finished*/
-            var flattened = _.flatten(_.values(me.timeModel));
-            _.forEach(flattened, function(node) {
+            _.forEach(me.timeModel, function(node) {
                 if (videoTime > node.endsAt) {
                     node.animation.element.classList.remove(node.animation.name);
                 }
@@ -171,12 +173,9 @@
 
                 var toStart = [];
 
-                //todo: should have put the time model in a flat
-                //array to begin with?
-                var flattened = _.flatten(_.values(me.timeModel));
-                for(var i = 0; i < flattened.length; i++) {
+                for(var i = 0; i < me.timeModel.length; i++) {
 
-                    var node = flattened[i]
+                    var node = me.timeModel[i];
 
                     //stop looking, nothing else is running
                     if (node.startsAt > seconds) {
@@ -300,7 +299,7 @@
 
             createTimeModel = function(me, animations) {
 
-                var nodes = me.timeModel;
+                var nodes = [];
 
                 _.forEach(animations, function(animation){
                     var duration = getDuration(animation.style.style);
@@ -310,10 +309,11 @@
                         duration: duration,
                         animation: animation
                     };
-
-                    nodes[timeNode.startsAt] =  nodes[timeNode.startsAt] || [];
-                    nodes[timeNode.startsAt].push(timeNode);
+                    nodes.push(timeNode);
                 });
+
+                me.timeModel = _.sortBy(nodes, "endsAt" );
+
             };
 
             /* The AnimationController bind method */
