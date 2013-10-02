@@ -7,6 +7,17 @@
     window.sync = {};
     var sync = window.sync;
 
+
+    /************************************************************************
+     * Constants
+     */
+    var KEYFRAMES_RULE = window.CSSRule.KEYFRAMES_RULE
+        || window.CSSRule.WEBKIT_KEYFRAMES_RULE
+        || window.CSSRule.MOZ_KEYFRAMES_RULE
+        || window.CSSRule.O_KEYFRAMES_RULE
+        || window.CSSRule.MS_KEYFRAMES_RULE;
+
+
     /************************************************************************
      * Helper Functions
      */
@@ -75,7 +86,31 @@
         //round a time to one tenth of a second
         //return time.toFixed(1);
         return Math.round(time * 10) / 10;
-    }
+    },
+
+    animationName = (function(){
+        var name = "";
+        return function(style){
+            if (name) {
+                return name;
+            } else {
+                if (style.animationName) {
+                    name = "animationName";
+                } else if (style.webkitAnimationName) {
+                    name = "webkitAnimationName";
+                } else if (style.mozAnimationName) {
+                    name = "mozAnimationName";
+                } else if (style.oAnimationName) {
+                    name="oAnimationName";
+                } else if (style.msAnimationName) {
+                    name = "msAnimationName";
+                } else {
+                    name = "";
+                }
+                return name;
+            }
+        }
+    })();
 
 
     /************************************************************************
@@ -92,8 +127,8 @@
 
     CSSAnimations.create = function(){
         /* create keyframe lookup */
-        var   keyframeRules = findRules(function(rule){
-            return rule.type === window.CSSRule.WEBKIT_KEYFRAMES_RULE; 
+        var keyframeRules = findRules(function(rule){
+            return KEYFRAMES_RULE === rule.type;
         }),
         keyframes = 
             _.object(
@@ -103,7 +138,8 @@
         
         /* create animation styles lookup */
         var animationStyleRules = findRules(function(rule){
-            return rule.style && rule.style.webkitAnimationName in keyframes;
+            var name = animationName(rule.style);
+            return rule.style && rule.style[name] in keyframes;
         }),
         animationStyles = 
             _.object(
@@ -168,8 +204,7 @@
             /*clean up any animations that have finished*/
             _.forEach(me.timeModel, function(node) {
                 if (videoTime > node.endsAt) {
-                    node.animation.element.classList.remove(node.animation.name);
-                    node.animation.element.offsetWidth = node.animation.element.offsetWidth;
+                    node.animation.reset();
                 }
             });
         },
@@ -249,12 +284,10 @@
             animation;
 
             while(animation = me.running.pop()){
-                animation.element.classList.remove(animation.name);
-                animation.element.offsetWidth = animation.element.offsetWidth;
+                animation.reset();
             }
             while(animation = me.paused.pop()){
-                animation.element.classList.remove(animation.name);
-                animation.element.offsetWidth = animation.element.offsetWidth;
+                animation.reset();
             }
 
         },
@@ -376,9 +409,20 @@
             var me = this;
             me.element.classList.add(me.name);
             me.element.addEventListener("animationend", function(){
-                me.element.classList.remove(me.name);
-                me.element.offsetWidth = me.element.offsetWidth;
+                me.reset();
             }, false);
+        },
+
+        reset: function(){
+
+            this.element.classList.remove(this.name);
+
+            // cause a reflow, otherwise the animation isn't fully 
+            // removed. (let's call this a browser bug).
+            this.element.offsetWidth = this.element.offsetWidth;
+
+            //cross-browserize
+            this.element.style.webkitAnimationDelay = "";
         }
     }
     sync.Animation = Animation;
