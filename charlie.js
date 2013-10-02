@@ -334,6 +334,13 @@
             var me = this,
             animation;
 
+            /* Need to be playing in order 
+             * to cause a reflow, otherwise 
+             * the offset fix in the reset method
+             * of the animation class has no effect.
+             */
+            me.resumeAnimations();
+
             while(animation = me.running.pop()){
                 animation.reset();
             }
@@ -442,7 +449,6 @@
         },
 
         reset: function(){
-            
             this.element.classList.remove(this.name);
 
             // cause a reflow, otherwise the animation isn't fully 
