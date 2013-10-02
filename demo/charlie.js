@@ -1340,7 +1340,9 @@ function assert(condition, message){
         || window.CSSRule.WEBKIT_KEYFRAMES_RULE
         || window.CSSRule.MOZ_KEYFRAMES_RULE
         || window.CSSRule.O_KEYFRAMES_RULE
-        || window.CSSRule.MS_KEYFRAMES_RULE;
+        || window.CSSRule.MS_KEYFRAMES_RULE,
+
+    PREFIXES = ["webkit", "moz", "o", "ms"];
 
 
     /************************************************************************
@@ -1436,15 +1438,20 @@ function assert(condition, message){
             }
         }
     })(),
+
+    prefixed = function(prop){
+
+        var props = _.map(PREFIXES, function(prefix){
+            return "-" + prefix + "-" + prop;
+        });
+        props.push(prop);
+        return props;
+    },
     
     animationDuration = (function(){
         
         var durationName = "",
-        prefixes = ["webkit", "moz", "o", "ms"],
-        props = _.map(prefixes, function(prefix){
-            return "-" + prefix + "-" + "animation-duration";
-        });
-        props.push("animation-duration");
+        props = prefixed("animation-duration");
         
         return function(style){
             if (!durationName){
@@ -1550,13 +1557,6 @@ function assert(condition, message){
                     me.running.push(animation);
                 });
             }
-
-            /*clean up any animations that have finished*/
-            _.forEach(me.timeModel, function(node) {
-                if (videoTime > node.endsAt) {
-                    node.animation.reset();
-                }
-            });
         },
 
         seek: (function(){
@@ -1639,9 +1639,11 @@ function assert(condition, message){
             animation;
 
             while(animation = me.running.pop()){
+                console.log("clearAnimations");
                 animation.reset();
             }
             while(animation = me.paused.pop()){
+                console.log("clearAnimations2");
                 animation.reset();
             }
 
@@ -1763,13 +1765,15 @@ function assert(condition, message){
         start: function(){
             var me = this;
             me.element.classList.add(me.name);
-            me.element.addEventListener("animationend", function(){
+            me.element.addEventListener("webkitAnimationEnd", function(){
+                console.log("animationEnd");
                 me.reset();
             }, false);
         },
 
         reset: function(){
-
+            
+            console.log("reset: " + this.element.innerHTML);
             this.element.classList.remove(this.name);
 
             // cause a reflow, otherwise the animation isn't fully 

@@ -15,7 +15,9 @@
         || window.CSSRule.WEBKIT_KEYFRAMES_RULE
         || window.CSSRule.MOZ_KEYFRAMES_RULE
         || window.CSSRule.O_KEYFRAMES_RULE
-        || window.CSSRule.MS_KEYFRAMES_RULE;
+        || window.CSSRule.MS_KEYFRAMES_RULE,
+
+    PREFIXES = ["webkit", "moz", "o", "ms"];
 
 
     /************************************************************************
@@ -111,15 +113,20 @@
             }
         }
     })(),
+
+    prefixed = function(prop){
+
+        var props = _.map(PREFIXES, function(prefix){
+            return "-" + prefix + "-" + prop;
+        });
+        props.push(prop);
+        return props;
+    },
     
     animationDuration = (function(){
         
         var durationName = "",
-        prefixes = ["webkit", "moz", "o", "ms"],
-        props = _.map(prefixes, function(prefix){
-            return "-" + prefix + "-" + "animation-duration";
-        });
-        props.push("animation-duration");
+        props = prefixed("animation-duration");
         
         return function(style){
             if (!durationName){
@@ -225,13 +232,6 @@
                     me.running.push(animation);
                 });
             }
-
-            /*clean up any animations that have finished*/
-            _.forEach(me.timeModel, function(node) {
-                if (videoTime > node.endsAt) {
-                    node.animation.reset();
-                }
-            });
         },
 
         seek: (function(){
@@ -438,13 +438,13 @@
         start: function(){
             var me = this;
             me.element.classList.add(me.name);
-            me.element.addEventListener("animationend", function(){
+            me.element.addEventListener("webkitAnimationEnd", function(){
                 me.reset();
             }, false);
         },
 
         reset: function(){
-
+            
             this.element.classList.remove(this.name);
 
             // cause a reflow, otherwise the animation isn't fully 
