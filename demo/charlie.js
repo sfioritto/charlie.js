@@ -1477,9 +1477,9 @@ function assert(condition, message){
      * for animations.
      */
 
-    var CSSAnimations = function(keyframes, styles){
+    var CSSAnimations = function(keyframes, cssRules){
         this.keyframes = keyframes;
-        this.styles = styles;
+        this.cssRules = cssRules;
     };
 
     CSSAnimations.create = function(){
@@ -1498,18 +1498,18 @@ function assert(condition, message){
             var name = animationName(rule.style);
             return rule.style && rule.style[name] in keyframes;
         }),
-        animationStyles = 
+        cssRules = 
             _.object(
                 _.map(
                     animationStyleRules,
                     function(style){ return [style.selectorText.substring(1), style]; }));
         
-        return new CSSAnimations(keyframes, animationStyles);
+        return new CSSAnimations(keyframes, cssRules);
     };
     
     CSSAnimations.prototype = {
         keyframes : {},
-        styles: {},
+        cssRules: {},
     };
     sync.CSSAnimations = CSSAnimations;
 
@@ -1639,11 +1639,9 @@ function assert(condition, message){
             animation;
 
             while(animation = me.running.pop()){
-                console.log("clearAnimations");
                 animation.reset();
             }
             while(animation = me.paused.pop()){
-                console.log("clearAnimations2");
                 animation.reset();
             }
 
@@ -1684,15 +1682,16 @@ function assert(condition, message){
                           function(name){
                               
                               var keyframe = cssAnimations.keyframes[name],
-                              style = cssAnimations.styles[name];
+                              cssRule = cssAnimations.cssRules[name];
                               
                               _.forEach(startTimes[name], function(startTime){
                                   var animation = new Animation(
                                       name,
-                                      style,
+                                      cssRule,
                                       keyframe,
                                       startTime.element,
                                       startTime.time);
+                                  console.log(cssRule);
                                   
                                   me.animations[name] = me.animations[name] || [];
                                   me.bySeconds[animation.startTime] = 
@@ -1709,7 +1708,7 @@ function assert(condition, message){
                 var nodes = [];
 
                 _.forEach(animations, function(animation){
-                    var duration = getDuration(animation.style.style);
+                    var duration = getDuration(animation.cssRule.style);
                     var timeNode = {
                         startsAt: animation.startTime,
                         endsAt: animation.startTime + duration,
@@ -1740,17 +1739,17 @@ function assert(condition, message){
     /************************************************************************
      * Animation
      */
-    var Animation = function(name, style, keyframe, element, startTime){
+    var Animation = function(name, cssRule, keyframe, element, startTime){
 
         assert(name, "You can't create an animation without a name");
-        assert(style, "No CSS style defined for animation " + name);
+        assert(cssRule, "No CSS rule defined for animation " + name);
         assert(keyframe, "No keyframe defined for animation " + name);
         assert(element, "No element found. Animations must be bound to a DOM element.");
         assert(startTime, "No start time provided for the animation");
 
         this.name = name;
         this.element = element;
-        this.style = style;
+        this.cssRule = cssRule;
         this.keyframe = keyframe;
         this.startTime = roundTime(Number(startTime));
     };
@@ -1758,7 +1757,7 @@ function assert(condition, message){
     Animation.prototype = {
         name: "",
         element: null,
-        style: null,
+        cssRule: null,
         keyframe: null,
         startTime: -1,
         
@@ -1766,14 +1765,12 @@ function assert(condition, message){
             var me = this;
             me.element.classList.add(me.name);
             me.element.addEventListener("webkitAnimationEnd", function(){
-                console.log("animationEnd");
                 me.reset();
             }, false);
         },
 
         reset: function(){
             
-            console.log("reset: " + this.element.innerHTML);
             this.element.classList.remove(this.name);
 
             // cause a reflow, otherwise the animation isn't fully 

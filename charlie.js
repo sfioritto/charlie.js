@@ -152,9 +152,9 @@
      * for animations.
      */
 
-    var CSSAnimations = function(keyframes, styles){
+    var CSSAnimations = function(keyframes, cssRules){
         this.keyframes = keyframes;
-        this.styles = styles;
+        this.cssRules = cssRules;
     };
 
     CSSAnimations.create = function(){
@@ -173,18 +173,18 @@
             var name = animationName(rule.style);
             return rule.style && rule.style[name] in keyframes;
         }),
-        animationStyles = 
+        cssRules = 
             _.object(
                 _.map(
                     animationStyleRules,
                     function(style){ return [style.selectorText.substring(1), style]; }));
         
-        return new CSSAnimations(keyframes, animationStyles);
+        return new CSSAnimations(keyframes, cssRules);
     };
     
     CSSAnimations.prototype = {
         keyframes : {},
-        styles: {},
+        cssRules: {},
     };
     sync.CSSAnimations = CSSAnimations;
 
@@ -357,12 +357,12 @@
                           function(name){
                               
                               var keyframe = cssAnimations.keyframes[name],
-                              style = cssAnimations.styles[name];
+                              cssRule = cssAnimations.cssRules[name];
                               
                               _.forEach(startTimes[name], function(startTime){
                                   var animation = new Animation(
                                       name,
-                                      style,
+                                      cssRule,
                                       keyframe,
                                       startTime.element,
                                       startTime.time);
@@ -382,7 +382,7 @@
                 var nodes = [];
 
                 _.forEach(animations, function(animation){
-                    var duration = getDuration(animation.style.style);
+                    var duration = getDuration(animation.cssRule.style);
                     var timeNode = {
                         startsAt: animation.startTime,
                         endsAt: animation.startTime + duration,
@@ -413,17 +413,17 @@
     /************************************************************************
      * Animation
      */
-    var Animation = function(name, style, keyframe, element, startTime){
+    var Animation = function(name, cssRule, keyframe, element, startTime){
 
         assert(name, "You can't create an animation without a name");
-        assert(style, "No CSS style defined for animation " + name);
+        assert(cssRule, "No CSS rule defined for animation " + name);
         assert(keyframe, "No keyframe defined for animation " + name);
         assert(element, "No element found. Animations must be bound to a DOM element.");
         assert(startTime, "No start time provided for the animation");
 
         this.name = name;
         this.element = element;
-        this.style = style;
+        this.cssRule = cssRule;
         this.keyframe = keyframe;
         this.startTime = roundTime(Number(startTime));
     };
@@ -431,7 +431,7 @@
     Animation.prototype = {
         name: "",
         element: null,
-        style: null,
+        cssRule: null,
         keyframe: null,
         startTime: -1,
         
