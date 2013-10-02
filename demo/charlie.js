@@ -1745,7 +1745,7 @@ function assert(condition, message){
         this.keyframe = keyframe;
         this.startsAt = roundTime(Number(startsAt));
         this.duration = calculatedDuration(cssRule.style);
-        this.endsAt = startsAt + this.duration;
+        this.endsAt = this.startsAt + this.duration;
     };
 
     Animation.prototype = {
