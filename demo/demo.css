@@ -52,9 +52,27 @@ h2 {
 	-webkit-animation-iteration-count: 1;
 	-webkit-animation-direction: normal;
     -webkit-animation-fill-mode: forwards;
+
+	-moz-animation-name: fade;
+	-moz-animation-duration: 4s;
+	-moz-animation-timing-function: linear;
+	-moz-animation-iteration-count: 1;
+	-moz-animation-direction: normal;
+    -moz-animation-fill-mode: forwards;
+
 }
 
 @-webkit-keyframes fade {
+   0% {
+       opacity: 1;
+   }
+
+   100% {
+       opacity: 0;
+   }
+}
+
+@-moz-keyframes fade {
    0% {
        opacity: 1;
    }
@@ -71,10 +89,30 @@ h2 {
 	-webkit-animation-iteration-count: 1;
 	-webkit-animation-direction: normal;
     -webkit-animation-fill-mode: forwards;
+
+	-moz-animation-name: grow;
+	-moz-animation-duration: 4s;
+	-moz-animation-timing-function: linear;
+	-moz-animation-iteration-count: 1;
+	-moz-animation-direction: normal;
+    -moz-animation-fill-mode: forwards;
+
     opacity: 1 !important;
 }
 
 @-webkit-keyframes grow {
+   0% {
+       width: 5px;
+       height: 5px;
+   }
+
+   100% {
+       width: 50px;
+       height: 50px;
+   }
+}
+
+@-moz-keyframes grow {
    0% {
        width: 5px;
        height: 5px;

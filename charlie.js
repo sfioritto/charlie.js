@@ -75,7 +75,7 @@
         rules = [];
 
         _.forEach(styleSheets, function(sheet){
-            _.forEach(_.toArray(sheet.rules), function(rule){
+            _.forEach(_.toArray(sheet.cssRules), function(rule){
                 if (matches(rule)){
                     rules.push(rule);
                 }
@@ -117,16 +117,16 @@
     prefixed = function(prop){
 
         var props = _.map(PREFIXES, function(prefix){
-            return "-" + prefix + "-" + prop;
+            return prefix + prop.substring(0, 1).toUpperCase() + prop.substring(1);
         });
         props.push(prop);
         return props;
     },
-    
+
     animationDuration = (function(){
         
         var durationName = "",
-        props = prefixed("animation-duration");
+        props = prefixed("animationDuration");
         
         return function(style){
             if (!durationName){
@@ -153,6 +153,14 @@
         
         //default to 1 iteration and no duration
         return iterations ? iterations * duration : (duration || 0);
+    },
+
+    onAnimationEnd = function(element, callback) {
+        element.addEventListener("webkitAnimationEnd", callback, false);
+        element.addEventListener("mozAnimationEnd", callback, false);
+        element.addEventListener("msAnimationEnd", callback, false);
+        element.addEventListener("oAnimationEnd", callback, false);
+        element.addEventListener("animationend", callback, false);
     };
 
 
@@ -184,8 +192,7 @@
         
         /* create animation styles lookup */
         var animationStyleRules = findRules(function(rule){
-            var name = animationName(rule.style);
-            return rule.style && rule.style[name] in keyframes;
+            return rule.style && rule.style[animationName(rule.style)] in keyframes;
         }),
         cssRules = 
             _.object(
@@ -417,6 +424,7 @@
     };
 
     Animation.prototype = {
+
         name: "",
         element: null,
         cssRule: null,
@@ -428,9 +436,9 @@
         start: function(){
             var me = this;
             me.element.classList.add(me.name);
-            me.element.addEventListener("webkitAnimationEnd", function(){
+            onAnimationEnd(me.element, function(){
                 me.reset();
-            }, false);
+            });
         },
 
         reset: function(){
