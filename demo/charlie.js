@@ -1486,7 +1486,19 @@ function assert(condition, message){
         element.addEventListener("msAnimationEnd", callback, false);
         element.addEventListener("oAnimationEnd", callback, false);
         element.addEventListener("animationend", callback, false);
+    },
+
+    setDelay = function(animation, seconds) {
+        var delay = -(seconds - animation.startsAt);
+        delay = delay < 0 ? delay : 0,
+        milliseconds = Math.floor(delay * 1000) + "ms";
+        animation.element.style.webkitAnimationDelay = milliseconds;
+        animation.element.style.mozAnimationDelay = milliseconds;
+        animation.element.style.oAnimationDelay = milliseconds;
+        animation.element.style.msAnimationDelay = milliseconds;
+        animation.element.style.animationDelay = milliseconds;
     };
+
 
 
     
@@ -1600,17 +1612,6 @@ function assert(condition, message){
                     }
                 }
                 return toStart;
-            },
-
-            setDelay = function(animation, seconds) {
-                var delay = -(seconds - animation.startsAt);
-                delay = delay < 0 ? delay : 0,
-                milliseconds = Math.floor(delay * 1000) + "ms";
-                animation.element.style.webkitAnimationDelay = milliseconds;
-                animation.element.style.mozAnimationDelay = milliseconds;
-                animation.element.style.oAnimationDelay = milliseconds;
-                animation.element.style.msAnimationDelay = milliseconds;
-                animation.element.style.animationDelay = milliseconds;
             };
 
             /* seek function */
@@ -1780,8 +1781,8 @@ function assert(condition, message){
             // removed. (let's call this a browser bug).
             this.element.offsetWidth = this.element.offsetWidth;
 
-            //cross-browserize
-            this.element.style.webkitAnimationDelay = "";
+            //reset any calculated animation delays.
+            setDelay(this, 0);
         }
     }
     sync.Animation = Animation;
