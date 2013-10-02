@@ -521,7 +521,11 @@
         loop = new BigLoop(controller);
         controller.bind(cssAnimations, animationData);
         loop.bind(video);
-        video.play();
+        video.load();
+        
+        video.addEventListener("canplay", function(){
+            video.play();
+        });
     }
     
 })();
