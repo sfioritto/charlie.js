@@ -3,16 +3,15 @@
     /* 
      * requires: dataset, classlist, getElementsByClassName
      */
-
  
     window.sync = {};
     var sync = window.sync;
-
 
     /************************************************************************
      * Helper Functions
      */
     var scrapeAnimationData = function() {
+
         /* Grab the data from the DOM. */
         var data = {};
         _.forEach(
@@ -70,7 +69,13 @@
             });
         });
         return rules;
-    };
+    },
+
+    roundTime = function(time) {
+        //round a time to one tenth of a second
+        //return time.toFixed(1);
+        return Math.round(time * 10) / 10;
+    }
 
 
     /************************************************************************
@@ -138,7 +143,8 @@
 
         startAnimations: function(time, videoTime){
 
-            var seconds = Math.floor(videoTime),
+            // allow precision to one tenth of a second
+            var seconds = roundTime(videoTime),
             me = this;
 
             //resume any paused animations
@@ -168,7 +174,7 @@
         },
 
         seek: (function(){
-            
+
             var animationsToStart = function(me, seconds) {
 
                 var toStart = [];
@@ -192,7 +198,7 @@
             setDelay = function(node, seconds) {
                 var delay = -(seconds - node.startsAt);
                 delay = delay < 0 ? delay : 0;
-                node.animation.element.style.webkitAnimationDelay = delay + "s";
+                node.animation.element.style.webkitAnimationDelay = Math.floor(delay * 1000) + "ms";
             };
 
             /* seek function */
@@ -203,20 +209,27 @@
                 //3. start 'em up.
 
                 var me = this,
-                seconds = Math.floor(videoTime),
+                seconds = roundTime(videoTime),
                 toStart = animationsToStart(me, seconds);
 
                 _.forEach(toStart, function(node){
                     setDelay(node, seconds);
+                    node.animation.start();
                     if (playNow) {
-                        node.animation.start();
-                        running.push();
+                        me.running.push(node.animation);
+                    } else {
+                        me.paused.push(node.animation);
+                        node.animation.element.style.webkitAnimationPlayState = "paused";
+                        node.animation.element.style.mozAnimationPlayState = "paused";
+                        node.animation.element.style.oAnimationPlayState = "paused"; 
+                        node.animation.element.style.animationPlayState = "paused"; 
                     }
                 });
             }
         })(),
 
         pauseAnimations: function(){
+
             var me = this,
             animation;
             
@@ -230,6 +243,7 @@
         },
 
         clearAnimations: function(){
+
             var me = this,
             animation;
 
@@ -318,7 +332,7 @@
 
             /* The AnimationController bind method */
             return function(cssAnimations, startTimes){
-                
+
                 var me = this;
                 createAnimations(me, cssAnimations, startTimes);
 
@@ -345,7 +359,7 @@
         this.element = element;
         this.style = style;
         this.keyframe = keyframe;
-        this.startTime = Math.floor(Number(startTime));
+        this.startTime = roundTime(Number(startTime));
     };
 
     Animation.prototype = {

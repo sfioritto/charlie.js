@@ -1325,33 +1325,43 @@ function assert(condition, message){
     }
 }(function(){
 
-    
+    /* 
+     * requires: dataset, classlist, getElementsByClassName
+     */
+ 
     window.sync = {};
     var sync = window.sync;
-
 
     /************************************************************************
      * Helper Functions
      */
     var scrapeAnimationData = function() {
+
         /* Grab the data from the DOM. */
         var data = {};
         _.forEach(
             document.getElementsByClassName("animated"),
             function(element) {
+
                 /*
                  * Creates an object of animation name: time, e.g.
                  * 
-                 * { element: domElement,
-                 *   swoopy: 6000,
-                 *   swirly: 9000 }
-                 * 
+                 * { swoopy: [ 
+                 *    { element: domElement,
+                 *      time: 6522 },
+                 *    { element: anotherElement,
+                 *      time: 7834 }]
+                 * }
                  */
 
                 var names = _.map(
-                    element.dataset.animations.split(","),
-                    function(name){ return name.replace(/\s+/, ""); });
-                times = element.dataset.times.split(","),
+                    element.dataset.animations.split(","), //the animation names
+                    function(name){ return name.replace(/\s+/, ""); }), //remove whitespace
+
+                times = _.map(
+                    element.dataset.times.split(","), //get times
+                    function(time){ return time.replace(/\s+/, ""); }); //remove whitespace
+
                 tuples = _.zip(names, times);
                 
                 _.forEach(tuples, function(tuple){
@@ -1384,11 +1394,20 @@ function assert(condition, message){
             });
         });
         return rules;
-    };
+    },
+
+    roundTime = function(time) {
+        //round a time to one tenth of a second
+        //return time.toFixed(1);
+        return Math.round(time * 10) / 10;
+    }
 
 
     /************************************************************************
      * CSSAnimations
+     * 
+     * Basically a bucket for holding keyframes and stylesheet rules
+     * for animations.
      */
 
     var CSSAnimations = function(keyframes, styles){
@@ -1449,7 +1468,8 @@ function assert(condition, message){
 
         startAnimations: function(time, videoTime){
 
-            var seconds = Math.floor(videoTime),
+            // allow precision to one tenth of a second
+            var seconds = roundTime(videoTime),
             me = this;
 
             //resume any paused animations
@@ -1471,8 +1491,7 @@ function assert(condition, message){
             }
 
             /*clean up any animations that have finished*/
-            var flattened = _.flatten(_.values(me.timeModel));
-            _.forEach(flattened, function(node) {
+            _.forEach(me.timeModel, function(node) {
                 if (videoTime > node.endsAt) {
                     node.animation.element.classList.remove(node.animation.name);
                 }
@@ -1480,17 +1499,14 @@ function assert(condition, message){
         },
 
         seek: (function(){
-            
+
             var animationsToStart = function(me, seconds) {
 
                 var toStart = [];
 
-                //todo: should have put the time model in a flat
-                //array to begin with?
-                var flattened = _.flatten(_.values(me.timeModel));
-                for(var i = 0; i < flattened.length; i++) {
+                for(var i = 0; i < me.timeModel.length; i++) {
 
-                    var node = flattened[i]
+                    var node = me.timeModel[i];
 
                     //stop looking, nothing else is running
                     if (node.startsAt > seconds) {
@@ -1507,7 +1523,7 @@ function assert(condition, message){
             setDelay = function(node, seconds) {
                 var delay = -(seconds - node.startsAt);
                 delay = delay < 0 ? delay : 0;
-                node.animation.element.style.webkitAnimationDelay = delay + "s";
+                node.animation.element.style.webkitAnimationDelay = Math.floor(delay * 1000) + "ms";
             };
 
             /* seek function */
@@ -1518,20 +1534,27 @@ function assert(condition, message){
                 //3. start 'em up.
 
                 var me = this,
-                seconds = Math.floor(videoTime),
+                seconds = roundTime(videoTime),
                 toStart = animationsToStart(me, seconds);
 
                 _.forEach(toStart, function(node){
                     setDelay(node, seconds);
+                    node.animation.start();
                     if (playNow) {
-                        node.animation.start();
-                        running.push();
+                        me.running.push(node.animation);
+                    } else {
+                        me.paused.push(node.animation);
+                        node.animation.element.style.webkitAnimationPlayState = "paused";
+                        node.animation.element.style.mozAnimationPlayState = "paused";
+                        node.animation.element.style.oAnimationPlayState = "paused"; 
+                        node.animation.element.style.animationPlayState = "paused"; 
                     }
                 });
             }
         })(),
 
         pauseAnimations: function(){
+
             var me = this,
             animation;
             
@@ -1545,6 +1568,7 @@ function assert(condition, message){
         },
 
         clearAnimations: function(){
+
             var me = this,
             animation;
 
@@ -1558,8 +1582,10 @@ function assert(condition, message){
         },
 
         resumeAnimations: function(){
+
             var me = this,
             animation;
+
             while (animation = me.paused.pop()){
                 animation.element.style.webkitAnimationPlayState = "running";
                 animation.element.style.mozAnimationPlayState = "running";
@@ -1586,7 +1612,7 @@ function assert(condition, message){
 
             createAnimations = function(me, cssAnimations, startTimes){
 
-                _.forEach(_.keys(startTimes), 
+                _.forEach(_.keys(startTimes),
                           function(name){
                               
                               var keyframe = cssAnimations.keyframes[name],
@@ -1610,9 +1636,9 @@ function assert(condition, message){
                           });
             },
 
-            createTimeModel = function(me, animations){
+            createTimeModel = function(me, animations) {
 
-                var nodes = me.timeModel;
+                var nodes = [];
 
                 _.forEach(animations, function(animation){
                     var duration = getDuration(animation.style.style);
@@ -1620,17 +1646,18 @@ function assert(condition, message){
                         startsAt: animation.startTime,
                         endsAt: animation.startTime + duration,
                         duration: duration,
-                        animation: animation 
+                        animation: animation
                     };
-
-                    nodes[timeNode.startsAt] =  nodes[timeNode.startsAt] || [];
-                    nodes[timeNode.startsAt].push(timeNode);
+                    nodes.push(timeNode);
                 });
+
+                me.timeModel = _.sortBy(nodes, "endsAt" );
+
             };
 
             /* The AnimationController bind method */
             return function(cssAnimations, startTimes){
-                
+
                 var me = this;
                 createAnimations(me, cssAnimations, startTimes);
 
@@ -1657,7 +1684,7 @@ function assert(condition, message){
         this.element = element;
         this.style = style;
         this.keyframe = keyframe;
-        this.startTime = Math.floor(Number(startTime));
+        this.startTime = roundTime(Number(startTime));
     };
 
     Animation.prototype = {
