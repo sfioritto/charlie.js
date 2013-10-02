@@ -1435,7 +1435,32 @@ function assert(condition, message){
                 return name;
             }
         }
+    })(),
+    
+    animationDuration = (function(){
+        
+        var durationName = "",
+        prefixes = ["webkit", "moz", "o", "ms"],
+        props = _.map(prefixes, function(prefix){
+            return "-" + prefix + "-" + "animation-duration";
+        });
+        props.push("animation-duration");
+        
+        return function(style){
+            if (!durationName){
+                for (var i = 0; i < props.length; i++){
+                    var prop = props[i];
+                    if (style[prop]){
+                        durationName = prop;
+                        break;
+                    }
+                }
+            }
+            return style[durationName];
+        };
     })();
+
+    
 
 
     /************************************************************************
@@ -1558,8 +1583,13 @@ function assert(condition, message){
 
             setDelay = function(node, seconds) {
                 var delay = -(seconds - node.startsAt);
-                delay = delay < 0 ? delay : 0;
-                node.animation.element.style.webkitAnimationDelay = Math.floor(delay * 1000) + "ms";
+                delay = delay < 0 ? delay : 0,
+                milliseconds = Math.floor(delay * 1000) + "ms";
+                node.animation.element.style.webkitAnimationDelay = milliseconds;
+                node.animation.element.style.mozAnimationDelay = milliseconds;
+                node.animation.element.style.oAnimationDelay = milliseconds;
+                node.animation.element.style.msAnimationDelay = milliseconds;
+                node.animation.element.style.animationDelay = milliseconds;
             };
 
             /* seek function */
@@ -1638,7 +1668,7 @@ function assert(condition, message){
                  * only the same duration for each iteration.
                  * NOTE2: Time must be in seconds for now.
                  */
-                var duration = style["-webkit-animation-duration"];
+                var duration = animationDuration(style);
                 duration = Number(duration.substring(0, duration.length -1)),
                 iterations = Number(style["-webkit-animation-iteration-count"]);
                 
