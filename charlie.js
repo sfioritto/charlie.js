@@ -140,7 +140,21 @@
             }
             return style[durationName];
         };
-    })();
+    })(),
+
+    calculatedDuration = function(style){
+        /* NOTE: supports multiple iterations, but 
+         * only the same duration for each iteration.
+         * NOTE2: Time must be in seconds for now.
+         */
+        var duration = animationDuration(style);
+        duration = Number(duration.substring(0, duration.length -1)),
+        iterations = Number(style["-webkit-animation-iteration-count"]);
+        
+        //default to 1 iteration and no duration
+        return iterations ? iterations * duration : (duration || 0);
+    };
+
 
     
 
@@ -242,29 +256,29 @@
 
                 for(var i = 0; i < me.timeModel.length; i++) {
 
-                    var node = me.timeModel[i];
+                    var animation = me.timeModel[i];
 
                     //stop looking, nothing else is running
-                    if (node.startsAt > seconds) {
+                    if (animation.startsAt > seconds) {
                         break;
                     }
 
-                    if (node.endsAt > seconds) {
-                        toStart.push(node);
+                    if (animation.endsAt > seconds) {
+                        toStart.push(animation);
                     }
                 }
                 return toStart;
             },
 
-            setDelay = function(node, seconds) {
-                var delay = -(seconds - node.startsAt);
+            setDelay = function(animation, seconds) {
+                var delay = -(seconds - animation.startsAt);
                 delay = delay < 0 ? delay : 0,
                 milliseconds = Math.floor(delay * 1000) + "ms";
-                node.animation.element.style.webkitAnimationDelay = milliseconds;
-                node.animation.element.style.mozAnimationDelay = milliseconds;
-                node.animation.element.style.oAnimationDelay = milliseconds;
-                node.animation.element.style.msAnimationDelay = milliseconds;
-                node.animation.element.style.animationDelay = milliseconds;
+                animation.element.style.webkitAnimationDelay = milliseconds;
+                animation.element.style.mozAnimationDelay = milliseconds;
+                animation.element.style.oAnimationDelay = milliseconds;
+                animation.element.style.msAnimationDelay = milliseconds;
+                animation.element.style.animationDelay = milliseconds;
             };
 
             /* seek function */
@@ -278,17 +292,17 @@
                 seconds = roundTime(videoTime),
                 toStart = animationsToStart(me, seconds);
 
-                _.forEach(toStart, function(node){
-                    setDelay(node, seconds);
-                    node.animation.start();
+                _.forEach(toStart, function(animation){
+                    setDelay(animation, seconds);
+                    animation.start();
                     if (playNow) {
-                        me.running.push(node.animation);
+                        me.running.push(animation);
                     } else {
-                        me.paused.push(node.animation);
-                        node.animation.element.style.webkitAnimationPlayState = "paused";
-                        node.animation.element.style.mozAnimationPlayState = "paused";
-                        node.animation.element.style.oAnimationPlayState = "paused"; 
-                        node.animation.element.style.animationPlayState = "paused"; 
+                        me.paused.push(animation);
+                        animation.element.style.webkitAnimationPlayState = "paused";
+                        animation.element.style.mozAnimationPlayState = "paused";
+                        animation.element.style.oAnimationPlayState = "paused"; 
+                        animation.element.style.animationPlayState = "paused"; 
                     }
                 });
             }
@@ -338,20 +352,7 @@
 
         bind: (function() {
 
-            var getDuration = function(style){
-                /* NOTE: supports multiple iterations, but 
-                 * only the same duration for each iteration.
-                 * NOTE2: Time must be in seconds for now.
-                 */
-                var duration = animationDuration(style);
-                duration = Number(duration.substring(0, duration.length -1)),
-                iterations = Number(style["-webkit-animation-iteration-count"]);
-                
-                //default to 1 iteration and no duration
-                return iterations ? iterations * duration : (duration || 0);
-            },
-
-            createAnimations = function(me, cssAnimations, startTimes){
+            var createAnimations = function(me, cssAnimations, startTimes){
 
                 _.forEach(_.keys(startTimes),
                           function(name){
@@ -368,32 +369,17 @@
                                       startTime.time);
                                   
                                   me.animations[name] = me.animations[name] || [];
-                                  me.bySeconds[animation.startTime] = 
-                                      me.bySeconds[animation.startTime] || [];
+                                  me.bySeconds[animation.startsAt] = 
+                                      me.bySeconds[animation.startsAt] || [];
                                   
                                   me.animations[name].push(animation);
-                                  me.bySeconds[animation.startTime].push(animation);
+                                  me.bySeconds[animation.startsAt].push(animation);
                               });
                           });
             },
 
             createTimeModel = function(me, animations) {
-
-                var nodes = [];
-
-                _.forEach(animations, function(animation){
-                    var duration = getDuration(animation.cssRule.style);
-                    var timeNode = {
-                        startsAt: animation.startTime,
-                        endsAt: animation.startTime + duration,
-                        duration: duration,
-                        animation: animation
-                    };
-                    nodes.push(timeNode);
-                });
-
-                me.timeModel = _.sortBy(nodes, "endsAt" );
-
+                me.timeModel = _.sortBy(animations, "endsAt" );
             };
 
             /* The AnimationController bind method */
@@ -413,19 +399,21 @@
     /************************************************************************
      * Animation
      */
-    var Animation = function(name, cssRule, keyframe, element, startTime){
+    var Animation = function(name, cssRule, keyframe, element, startsAt){
 
         assert(name, "You can't create an animation without a name");
         assert(cssRule, "No CSS rule defined for animation " + name);
         assert(keyframe, "No keyframe defined for animation " + name);
         assert(element, "No element found. Animations must be bound to a DOM element.");
-        assert(startTime, "No start time provided for the animation");
+        assert(startsAt, "No start time provided for the animation");
 
         this.name = name;
         this.element = element;
         this.cssRule = cssRule;
         this.keyframe = keyframe;
-        this.startTime = roundTime(Number(startTime));
+        this.startsAt = roundTime(Number(startsAt));
+        this.duration = calculatedDuration(cssRule.style);
+        this.endsAt = startsAt + this.duration;
     };
 
     Animation.prototype = {
@@ -433,7 +421,9 @@
         element: null,
         cssRule: null,
         keyframe: null,
-        startTime: -1,
+        startsAt: -1,
+        duration: -1,
+        endsAt: -1,
         
         start: function(){
             var me = this;
