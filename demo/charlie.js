@@ -1494,6 +1494,7 @@ function assert(condition, message){
             _.forEach(me.timeModel, function(node) {
                 if (videoTime > node.endsAt) {
                     node.animation.element.classList.remove(node.animation.name);
+                    node.animation.element.offsetWidth = node.animation.element.offsetWidth;
                 }
             });
         },
@@ -1574,9 +1575,11 @@ function assert(condition, message){
 
             while(animation = me.running.pop()){
                 animation.element.classList.remove(animation.name);
+                animation.element.offsetWidth = animation.element.offsetWidth;
             }
             while(animation = me.paused.pop()){
                 animation.element.classList.remove(animation.name);
+                animation.element.offsetWidth = animation.element.offsetWidth;
             }
 
         },
@@ -1695,7 +1698,12 @@ function assert(condition, message){
         startTime: -1,
         
         start: function(){
-            this.element.classList.add(this.name);
+            var me = this;
+            me.element.classList.add(me.name);
+            me.element.addEventListener("animationend", function(){
+                me.element.classList.remove(me.name);
+                me.element.offsetWidth = me.element.offsetWidth;
+            }, false);
         }
     }
     sync.Animation = Animation;
