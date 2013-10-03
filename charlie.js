@@ -28,7 +28,10 @@
         /* Grab the data from the DOM. */
         var data = {};
         _.forEach(
+            //loop through every element that should be animated
             document.getElementsByClassName("animated"),
+            
+            //for each element, pull off the info from the dataset
             function(element) {
 
                 /*
@@ -42,15 +45,27 @@
                  * }
                  */
 
-                var names = _.map(
-                    element.dataset.animations.split(","), //the animation names
-                    function(name){ return name.replace(/\s+/, ""); }), //remove whitespace
-
-                times = _.map(
-                    element.dataset.times.split(","), //get times
-                    function(time){ return time.replace(/\s+/, ""); }); //remove whitespace
-
+                //
+                var names = element.dataset.animations.split(/\s*,\s*/),
+                times = element.dataset.times.split(/\s*,\s*/),
+                
+                // creates an array of arrays, each one called a 'tuple'
+                // basically ties the time to the 
+                // animation name, so it looks like:
+                //[["zippy", 1], ["fade", 2] ... ]
                 tuples = _.zip(names, times);
+                
+                /*
+                * turn the tuples into an object, 
+                * which is just a little easier to work with.
+                * We end up with an object that looks like:
+                * {
+                *  fade: [ {element: domElement, time: "1.2s"}, ... ],
+                *  fling: [ {element: domelement, time: "2.4s"}, ... ]
+                * }
+                * So we can reuse an animation on different elements
+                * at different times.
+                */
                 
                 _.forEach(tuples, function(tuple){
                     var name = tuple[0],
@@ -260,6 +275,10 @@
                     return !_.contains(me.running, animation);
                 });
                 
+                /* requestAnimationFrame happens more than 
+                 *  every tenth of a second, so this code will run
+                 *  multiple times for each animation starting time
+                 */
                 _.forEach(notRunning, function(animation){
                     animation.start();
                     me.running.push(animation);
@@ -300,17 +319,26 @@
                 seconds = roundTime(videoTime),
                 toStart = animationsToStart(me, seconds);
 
+                // go through each animation to start
                 _.forEach(toStart, function(animation){
+
+                    //set the delay to start the animation at the right place
                     setDelay(animation, seconds);
+
+                    //start it up
                     animation.start();
+
+                    /* if the move is playing right now, then let the animation
+                     * keep playing, otherwise pause the animation to wait
+                     * until the video resumes.
+                     */
+
                     if (playNow) {
                         me.running.push(animation);
+
                     } else {
                         me.paused.push(animation);
-                        animation.element.style.webkitAnimationPlayState = "paused";
-                        animation.element.style.mozAnimationPlayState = "paused";
-                        animation.element.style.oAnimationPlayState = "paused"; 
-                        animation.element.style.animationPlayState = "paused"; 
+                        animation.pause();
                     }
                 });
             }
@@ -322,10 +350,8 @@
             animation;
             
             while(animation = me.running.pop()){
-                animation.element.style.webkitAnimationPlayState = "paused";
-                animation.element.style.mozAnimationPlayState = "paused";
-                animation.element.style.oAnimationPlayState = "paused"; 
-                animation.element.style.animationPlayState = "paused"; 
+                animation.pause();
+                //keep track of paused animations so we can resume them later ...
                 me.paused.push(animation);
             }
         },
@@ -357,10 +383,7 @@
             animation;
 
             while (animation = me.paused.pop()){
-                animation.element.style.webkitAnimationPlayState = "running";
-                animation.element.style.mozAnimationPlayState = "running";
-                animation.element.style.oAnimationPlayState = "running"; 
-                animation.element.style.animationPlayState = "running"; 
+                animation.resume();
                 me.running.push(animation);
             }
         },
@@ -443,6 +466,7 @@
         
         start: function(){
             var me = this;
+            //The name of the animation is the same as the class name by convention.
             me.element.classList.add(me.name);
             onAnimationEnd(me.element, function(){
                 me.reset();
@@ -458,7 +482,22 @@
 
             //reset any calculated animation delays.
             setDelay(this, 0);
+        },
+        
+        pause: function(){
+            this.element.style.webkitAnimationPlayState = "paused";
+            this.element.style.mozAnimationPlayState = "paused";
+            this.element.style.oAnimationPlayState = "paused"; 
+            this.element.style.animationPlayState = "paused"; 
+        },
+
+        resume: function(){
+            this.element.style.webkitAnimationPlayState = "running";
+            this.element.style.mozAnimationPlayState = "running";
+            this.element.style.oAnimationPlayState = "running"; 
+            this.element.style.animationPlayState = "running"; 
         }
+
     }
     sync.Animation = Animation;
 
@@ -482,10 +521,10 @@
             //start and stop the loop when the video
             //starts and stops
             this.video = video;
-            video.addEventListener("play", this.start.bind(this));
-            video.addEventListener("ended", this.ended.bind(this));
-            video.addEventListener("pause", this.stop.bind(this));
-            video.addEventListener("seeked", this.seeked.bind(this));
+            video.addEventListener("play", this.start.bind(this), false);
+            video.addEventListener("ended", this.ended.bind(this), false);
+            video.addEventListener("pause", this.stop.bind(this), false);
+            video.addEventListener("seeked", this.seeked.bind(this), false);
         },
 
         ended: function(){

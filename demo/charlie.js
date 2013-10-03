@@ -1310,20 +1310,16 @@ if (!Date.now)
     }
 }());
 
-Function.prototype.curry = function () {
-    var slice = Array.prototype.slice,
-        args = slice.apply(arguments),
-        that = this;
-    return function () {
-        return that.apply(null, args.concat(slice.apply(arguments)));
-    };
-};
-
 function assert(condition, message){
     if (!!condition === false){
         throw message || "Assertion failed";
     }
-}(function(){
+}
+
+/* polyfill for classList */
+/*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js*/
+if(typeof document!=="undefined"&&!("classList" in document.createElement("a"))){(function(j){if(!("HTMLElement" in j)&&!("Element" in j)){return}var a="classList",f="prototype",m=(j.HTMLElement||j.Element)[f],b=Object,k=String[f].trim||function(){return this.replace(/^\s+|\s+$/g,"")},c=Array[f].indexOf||function(q){var p=0,o=this.length;for(;p<o;p++){if(p in this&&this[p]===q){return p}}return -1},n=function(o,p){this.name=o;this.code=DOMException[o];this.message=p},g=function(p,o){if(o===""){throw new n("SYNTAX_ERR","An invalid or illegal string was specified")}if(/\s/.test(o)){throw new n("INVALID_CHARACTER_ERR","String contains an invalid character")}return c.call(p,o)},d=function(s){var r=k.call(s.className),q=r?r.split(/\s+/):[],p=0,o=q.length;for(;p<o;p++){this.push(q[p])}this._updateClassName=function(){s.className=this.toString()}},e=d[f]=[],i=function(){return new d(this)};n[f]=Error[f];e.item=function(o){return this[o]||null};e.contains=function(o){o+="";return g(this,o)!==-1};e.add=function(){var s=arguments,r=0,p=s.length,q,o=false;do{q=s[r]+"";if(g(this,q)===-1){this.push(q);o=true}}while(++r<p);if(o){this._updateClassName()}};e.remove=function(){var t=arguments,s=0,p=t.length,r,o=false;do{r=t[s]+"";var q=g(this,r);if(q!==-1){this.splice(q,1);o=true}}while(++s<p);if(o){this._updateClassName()}};e.toggle=function(p,q){p+="";var o=this.contains(p),r=o?q!==true&&"remove":q!==false&&"add";if(r){this[r](p)}return !o};e.toString=function(){return this.join(" ")};if(b.defineProperty){var l={get:i,enumerable:true,configurable:true};try{b.defineProperty(m,a,l)}catch(h){if(h.number===-2146823252){l.enumerable=false;b.defineProperty(m,a,l)}}}else{if(b[f].__defineGetter__){m.__defineGetter__(a,i)}}}(self))};
+(function(){
 
     /* 
      * requires: dataset, classlist, getElementsByClassName
@@ -1353,7 +1349,10 @@ function assert(condition, message){
         /* Grab the data from the DOM. */
         var data = {};
         _.forEach(
+            //loop through every element that should be animated
             document.getElementsByClassName("animated"),
+            
+            //for each element, pull off the info from the dataset
             function(element) {
 
                 /*
@@ -1367,15 +1366,27 @@ function assert(condition, message){
                  * }
                  */
 
-                var names = _.map(
-                    element.dataset.animations.split(","), //the animation names
-                    function(name){ return name.replace(/\s+/, ""); }), //remove whitespace
-
-                times = _.map(
-                    element.dataset.times.split(","), //get times
-                    function(time){ return time.replace(/\s+/, ""); }); //remove whitespace
-
+                //
+                var names = element.dataset.animations.split(/\s*,\s*/),
+                times = element.dataset.times.split(/\s*,\s*/),
+                
+                // creates an array of arrays, each one called a 'tuple'
+                // basically ties the time to the 
+                // animation name, so it looks like:
+                //[["zippy", 1], ["fade", 2] ... ]
                 tuples = _.zip(names, times);
+                
+                /*
+                * turn the tuples into an object, 
+                * which is just a little easier to work with.
+                * We end up with an object that looks like:
+                * {
+                *  fade: [ {element: domElement, time: "1.2s"}, ... ],
+                *  fling: [ {element: domelement, time: "2.4s"}, ... ]
+                * }
+                * So we can reuse an animation on different elements
+                * at different times.
+                */
                 
                 _.forEach(tuples, function(tuple){
                     var name = tuple[0],
@@ -1585,6 +1596,10 @@ function assert(condition, message){
                     return !_.contains(me.running, animation);
                 });
                 
+                /* requestAnimationFrame happens more than 
+                 *  every tenth of a second, so this code will run
+                 *  multiple times for each animation starting time
+                 */
                 _.forEach(notRunning, function(animation){
                     animation.start();
                     me.running.push(animation);
@@ -1625,17 +1640,26 @@ function assert(condition, message){
                 seconds = roundTime(videoTime),
                 toStart = animationsToStart(me, seconds);
 
+                // go through each animation to start
                 _.forEach(toStart, function(animation){
+
+                    //set the delay to start the animation at the right place
                     setDelay(animation, seconds);
+
+                    //start it up
                     animation.start();
+
+                    /* if the move is playing right now, then let the animation
+                     * keep playing, otherwise pause the animation to wait
+                     * until the video resumes.
+                     */
+
                     if (playNow) {
                         me.running.push(animation);
+
                     } else {
                         me.paused.push(animation);
-                        animation.element.style.webkitAnimationPlayState = "paused";
-                        animation.element.style.mozAnimationPlayState = "paused";
-                        animation.element.style.oAnimationPlayState = "paused"; 
-                        animation.element.style.animationPlayState = "paused"; 
+                        animation.pause();
                     }
                 });
             }
@@ -1647,10 +1671,8 @@ function assert(condition, message){
             animation;
             
             while(animation = me.running.pop()){
-                animation.element.style.webkitAnimationPlayState = "paused";
-                animation.element.style.mozAnimationPlayState = "paused";
-                animation.element.style.oAnimationPlayState = "paused"; 
-                animation.element.style.animationPlayState = "paused"; 
+                animation.pause();
+                //keep track of paused animations so we can resume them later ...
                 me.paused.push(animation);
             }
         },
@@ -1682,10 +1704,7 @@ function assert(condition, message){
             animation;
 
             while (animation = me.paused.pop()){
-                animation.element.style.webkitAnimationPlayState = "running";
-                animation.element.style.mozAnimationPlayState = "running";
-                animation.element.style.oAnimationPlayState = "running"; 
-                animation.element.style.animationPlayState = "running"; 
+                animation.resume();
                 me.running.push(animation);
             }
         },
@@ -1768,6 +1787,7 @@ function assert(condition, message){
         
         start: function(){
             var me = this;
+            //The name of the animation is the same as the class name by convention.
             me.element.classList.add(me.name);
             onAnimationEnd(me.element, function(){
                 me.reset();
@@ -1783,7 +1803,22 @@ function assert(condition, message){
 
             //reset any calculated animation delays.
             setDelay(this, 0);
+        },
+        
+        pause: function(){
+            this.element.style.webkitAnimationPlayState = "paused";
+            this.element.style.mozAnimationPlayState = "paused";
+            this.element.style.oAnimationPlayState = "paused"; 
+            this.element.style.animationPlayState = "paused"; 
+        },
+
+        resume: function(){
+            this.element.style.webkitAnimationPlayState = "running";
+            this.element.style.mozAnimationPlayState = "running";
+            this.element.style.oAnimationPlayState = "running"; 
+            this.element.style.animationPlayState = "running"; 
         }
+
     }
     sync.Animation = Animation;
 
@@ -1807,10 +1842,10 @@ function assert(condition, message){
             //start and stop the loop when the video
             //starts and stops
             this.video = video;
-            video.addEventListener("play", this.start.bind(this));
-            video.addEventListener("ended", this.ended.bind(this));
-            video.addEventListener("pause", this.stop.bind(this));
-            video.addEventListener("seeked", this.seeked.bind(this));
+            video.addEventListener("play", this.start.bind(this), false);
+            video.addEventListener("ended", this.ended.bind(this), false);
+            video.addEventListener("pause", this.stop.bind(this), false);
+            video.addEventListener("seeked", this.seeked.bind(this), false);
         },
 
         ended: function(){
