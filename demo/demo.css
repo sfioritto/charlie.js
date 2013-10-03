@@ -53,12 +53,12 @@ h2 {
 	-webkit-animation-direction: normal;
     -webkit-animation-fill-mode: forwards;
 
-	-moz-animation-name: fade;
-	-moz-animation-duration: 4s;
-	-moz-animation-timing-function: linear;
-	-moz-animation-iteration-count: 1;
-	-moz-animation-direction: normal;
-    -moz-animation-fill-mode: forwards;
+	animation-name: fade;
+	animation-duration: 4s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-direction: normal;
+    animation-fill-mode: forwards;
 
 }
 
@@ -72,7 +72,7 @@ h2 {
    }
 }
 
-@-moz-keyframes fade {
+@keyframes fade {
    0% {
        opacity: 1;
    }
@@ -90,12 +90,12 @@ h2 {
 	-webkit-animation-direction: normal;
     -webkit-animation-fill-mode: forwards;
 
-	-moz-animation-name: grow;
-	-moz-animation-duration: 4s;
-	-moz-animation-timing-function: linear;
-	-moz-animation-iteration-count: 1;
-	-moz-animation-direction: normal;
-    -moz-animation-fill-mode: forwards;
+	animation-name: grow;
+	animation-duration: 4s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-direction: normal;
+    animation-fill-mode: forwards;
 
     opacity: 1 !important;
 }
@@ -112,7 +112,7 @@ h2 {
    }
 }
 
-@-moz-keyframes grow {
+@keyframes grow {
    0% {
        width: 5px;
        height: 5px;

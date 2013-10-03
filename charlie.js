@@ -528,11 +528,7 @@
         loop = new BigLoop(controller);
         controller.bind(cssAnimations, animationData);
         loop.bind(video);
-        video.load();
-        
-        video.addEventListener("canplay", function(){
-            video.play();
-        });
+        video.play();
     }
     
 })();
