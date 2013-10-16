@@ -4,8 +4,8 @@
      * requires: dataset, classlist, getElementsByClassName
      */
  
-    window.sync = {};
-    var sync = window.sync;
+    window.CHARLIE = {};
+    var CHARLIE = window.CHARLIE;
 
 
     /************************************************************************
@@ -158,16 +158,14 @@
     })(),
 
     calculatedDuration = function(style){
-        /* NOTE: supports multiple iterations, but 
+        /* NOTE: could support multiple iterations, but 
          * only the same duration for each iteration.
-         * NOTE2: Time must be in seconds for now.
+         * TODO: support iterations
          */
         var duration = animationDuration(style);
-        duration = Number(duration.substring(0, duration.length -1)),
-        iterations = Number(style["-webkit-animation-iteration-count"]);
+        duration = Number(duration.substring(0, duration.length -1));
         
-        //default to 1 iteration and no duration
-        return iterations ? iterations * duration : (duration || 0);
+        return duration || 0;
     },
 
     onAnimationEnd = function(element, callback) {
@@ -179,9 +177,10 @@
     },
 
     setDelay = function(animation, seconds) {
-        var delay = -(seconds - animation.startsAt);
+        var delay = -(seconds - animation.startsAt),
         delay = delay < 0 ? delay : 0,
         milliseconds = Math.floor(delay * 1000) + "ms";
+
         animation.element.style.webkitAnimationDelay = milliseconds;
         animation.element.style.mozAnimationDelay = milliseconds;
         animation.element.style.oAnimationDelay = milliseconds;
@@ -219,14 +218,14 @@
         
         /* create animation styles lookup */
         var animationStyleRules = findRules(function(rule){
-            return rule.style && rule.style[animationName(rule.style)] in keyframes;
+            return rule.style && rule.style[animationName(rule.style)];
         }),
         cssRules = 
             _.object(
                 _.map(
                     animationStyleRules,
                     function(style){ return [style.selectorText.substring(1), style]; }));
-        
+
         return new CSSAnimations(keyframes, cssRules);
     };
     
@@ -234,19 +233,20 @@
         keyframes : {},
         cssRules: {},
     };
-    sync.CSSAnimations = CSSAnimations;
+    CHARLIE.CSSAnimations = CSSAnimations;
 
 
     /************************************************************************
      * Animation Controller 
      */
 
-    var AnimationController = function(animations, bySeconds, timeModel){
+    var AnimationController = function(animations, bySeconds, timeModel, callbacks){
         this.animations = animations || {};
         this.bySeconds = bySeconds || {};
         this.running = [];
         this.paused = [];
         this.timeModel = timeModel || {};
+        this.callbacks = callbacks || {};
     };
 
     AnimationController.prototype = {
@@ -256,6 +256,7 @@
         running: [],
         paused: [],
         timeModel: {},
+        callbacks: {},
 
         startAnimations: function(time, videoTime){
 
@@ -285,6 +286,26 @@
                 });
             }
         },
+
+        executeCallbacks: (function(){
+
+            var currentTime = 0;
+
+            return function(time, videoTime){
+
+                // allow precision to one tenth of a second
+                var seconds = roundTime(videoTime),
+                me = this;
+
+                if (seconds > currentTime || seconds < currentTime) {
+                    currentTime = seconds;
+                    var callbacks = me.callbacks[seconds] || [];
+                    _.forEach(callbacks, function(cb){
+                        cb();
+                    });
+                }
+            }
+        })(),
 
         seek: (function(){
 
@@ -390,7 +411,7 @@
 
         bind: (function() {
 
-            var createAnimations = function(me, cssAnimations, startTimes){
+            var createAnimations = function(me, cssAnimations, startTimes, callbacks){
 
                 _.forEach(_.keys(startTimes),
                           function(name){
@@ -428,10 +449,12 @@
 
                 var animations = _.flatten(_.values(me.animations));
                 createTimeModel(me, animations);
+
+                me.callbacks = callbacks;
             }
         })()/* returns the bind method*/
     }
-    sync.AnimationController = AnimationController;
+    CHARLIE.AnimationController = AnimationController;
 
 
     /************************************************************************
@@ -499,7 +522,7 @@
         }
 
     }
-    sync.Animation = Animation;
+    CHARLIE.Animation = Animation;
 
 
     /************************************************************************
@@ -533,13 +556,14 @@
 
         seeked: function(){
             this.controller.clearAnimations();
-            this.controller.seek(video.currentTime, !video.paused);
+            this.controller.seek(video.currentTime, !this.video.paused);
         },
 
         tick: function(time){
             if (this.running){
                 this.frameID = requestAnimationFrame(this.tick.bind(this));
-                this.controller.startAnimations(time, video.currentTime);
+                this.controller.startAnimations(time, this.video.currentTime);
+                this.controller.executeCallbacks(time, this.video.currentTime);
             }
         },
 
@@ -558,16 +582,22 @@
         }
     }
     
-
-    window.onload = function(){
-        var video = document.getElementById("video"),
-        cssAnimations = CSSAnimations.create(),
+    var callbacks = {};
+    CHARLIE.setup = function(video){
+        var cssAnimations = CSSAnimations.create(),
         animationData = scrapeAnimationData(),
         controller = new AnimationController(),
         loop = new BigLoop(controller);
-        controller.bind(cssAnimations, animationData);
+        controller.bind(cssAnimations, animationData, callbacks);
         loop.bind(video);
-        video.play();
     }
+
     
+    CHARLIE.addCallback = function(callback, time){
+        time = roundTime(time);
+        var cbs = callbacks[time] || [];
+        cbs.push(callback);
+        callbacks[time] = cbs;
+    }
+
 })();

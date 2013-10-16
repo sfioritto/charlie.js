@@ -1540,14 +1540,13 @@ if(typeof document!=="undefined"&&!("classList" in document.createElement("a")))
         
         /* create animation styles lookup */
         var animationStyleRules = findRules(function(rule){
-            return rule.style && rule.style[animationName(rule.style)] in keyframes;
+            return rule.style && rule.style[animationName(rule.style)];
         }),
         cssRules = 
             _.object(
                 _.map(
                     animationStyleRules,
                     function(style){ return [style.selectorText.substring(1), style]; }));
-        
         return new CSSAnimations(keyframes, cssRules);
     };
     
