@@ -90,7 +90,13 @@
         rules = [];
 
         _.forEach(styleSheets, function(sheet){
-            _.forEach(_.toArray(sheet.cssRules), function(rule){
+            var cssRules = [];
+            try {
+                cssRules = _.toArray(sheet.cssRules);
+            } catch (e) {
+                //cross domain exception
+            }
+            _.forEach(cssRules, function(rule){
                 if (matches(rule)){
                     rules.push(rule);
                 }
@@ -591,7 +597,6 @@
         controller.bind(cssAnimations, animationData, callbacks);
         loop.bind(video);
     }
-
     
     CHARLIE.addCallback = function(callback, time){
         time = roundTime(time);
