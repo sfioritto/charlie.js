@@ -29,7 +29,7 @@
         var data = {};
         _.forEach(
             //loop through every element that should be animated
-            document.getElementsByClassName("animated"),
+            document.getElementsByClassName("charlie"),
             
             //for each element, pull off the info from the dataset
             function(element) {
