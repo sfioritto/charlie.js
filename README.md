@@ -3,6 +3,9 @@ charlie.js
 
 A small framework for synchronizing video and CSS3 animations.
 
+You can see a live demo here:
+http://www.sketchingwithcss.com/flexbox/
+
 Gotchas
 ---------
 
