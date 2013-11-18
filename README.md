@@ -13,7 +13,7 @@ Create your CSS3 animations with the naming convention
 
 The animation properties should be defined with a class selector that
 matches the name of the corresponding keyframe.
-
+```css
 .grow {
 	animation-name: grow;
 	animation-duration: 4s;
@@ -34,7 +34,7 @@ matches the name of the corresponding keyframe.
        height: 50px;
    }
 }
-
+```
 Notice the class name matches the animation-name matches the keyframes
 name.
 
@@ -54,10 +54,10 @@ animate. Then add two data attributes: data-animations and data-times.
   a tenth of a second.
 
 e.g.
-
+```html
 <div class="charlie" data-animations="grow, shrink" data-times="40.2, 90.3">
 </div>
-
+```
 Include the right javascript
 ----------------------------------------
 
@@ -74,9 +74,9 @@ Make the CHARLIE.setup(video) call
 ------------------------------
 Somewhere in your javascript get a reference to the video element you
 will sync with the animations. Then call CHARLIE.setup.
-
+```javascript
 CHARLIE.setup(video);
-
+```
 
 Include Javascript callbacks with CHARLIE.addCallback
 ------------------------------
@@ -84,11 +84,11 @@ Include Javascript callbacks with CHARLIE.addCallback
 For fancier and more complicated use cases you will need more than
 just CSS3 animations. There will be other state on your page you need
 to maintain, so you can add Javascript callbacks at arbitrary times.
-
+```javascript
 CHARLIE.addCallback(function(){
     // do stuff in here
 }, 43.2);
-
+```
 Charlie.js does a pretty good job of maintaining animation state and
 keeping everything in sync as you jump around a video, but this is not
 the case with your Javascript callbacks.
