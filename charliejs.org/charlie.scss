@@ -1,0 +1,26 @@
+
+@mixin landmark-dimensional {
+    font-family: 'Landmark Dimensional A', 'Landmark Dimensional B'; 
+    font-weight: 400; 
+    font-style: normal;
+}
+
+@mixin landmark-inline {
+    font-family: 'Landmark Inline A', 'Landmark Inline B';
+    font-weight: 400;
+    font-style: normal;
+}
+
+@mixin landmark-regular {
+    font-family: 'Landmark Inline A', 'Landmark Inline B';
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1 {
+    @include landmark-dimensional;
+}
+
+h2 {
+    @include landmark-inline;
+}
