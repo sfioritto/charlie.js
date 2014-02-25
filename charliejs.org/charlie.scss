@@ -3,23 +3,57 @@ $font-size-2: 1.6154rem;
 $font-size-3: 2.6154rem;
 $font-size-4: 4.2308rem;
 $font-size-5: 6.8462rem;
+$black: #222;
+$white: #eee;
+
+@mixin breakpoint($point) {
+  @if $point == big {
+    @media (min-width: 600px) { @content; }
+  }
+  @else if $point == bigger {
+    @media (min-width: 792px) { @content; }
+  }
+}
 
 @mixin landmark-dimensional {
-    font-family: 'Landmark Dimensional A', 'Landmark Dimensional B'; 
+    font-family: 'Landmark Dimensional A', 'Landmark Dimensional B', verdana, sans-serif; 
+    font-family: verdana;
     font-weight: 400; 
     font-style: normal;
 }
 
 @mixin landmark-inline {
-    font-family: 'Landmark Inline A', 'Landmark Inline B';
+    font-family: 'Landmark Inline A', 'Landmark Inline B', verdana, sans-serif;
+    font-family: verdana;
     font-weight: 400;
     font-style: normal;
 }
 
 @mixin landmark-regular {
-    font-family: 'Landmark Inline A', 'Landmark Inline B';
+    font-family: 'Landmark Regular A', 'Landmark Regular B', verdana, sans-serif;
+    font-family: verdana;
     font-weight: 400;
     font-style: normal;
+}
+
+@mixin whitney {
+    font-family: 'Whitney SSm A', 'Whitney SSm B', georgia, serif;
+    font-family: georgia;
+    font-weight: 400; 
+}
+
+@mixin monospace {
+    font-family: Consolas, 'Liberation Mono', Courier, monospace;
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    @include whitney;
 }
 
 h1, h2, figure {
@@ -28,25 +62,83 @@ h1, h2, figure {
 
 h1, h2 {
     text-align: center;
-    margin: 1rem 0;
+    margin: 2rem 0;
+    color: $white;
 }
 
 h1 {
     @include landmark-dimensional;
+    
     font-size: $font-size-3;
+    @include breakpoint(big) {
+        font-size: $font-size-4;
+    }
+
     text-align: center;
 }
 
 h2 {
-    @include landmark-inline;
+    @include landmark-regular;
+
     font-size: $font-size-2;
+    @include breakpoint(big) {
+        @include landmark-inline;
+        font-size: $font-size-3;
+    }
 }
 
 header {
+    background: $black;
+
     figure {
+        position: relative;
+        background: white;
+        width: 100%;
         text-align: center;
+        padding: 1rem 0;
     }
     figure img {
-        max-width: 800px;
+        max-width: 100%;
+        width: 800px;
+    }
+}
+
+.social {
+    padding: 1rem 1rem;
+    text-align: center;
+}
+
+main {
+    width: 100%;
+    max-width: 792px;
+    margin: 0 auto;
+    
+    p {
+        margin: 1rem 0;
+        line-height: 1.4em;
+    }
+}
+
+.summary {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    .step {
+        flex: 1 0 auto;
+        margin: 0 1rem;
+    }
+    pre {
+        @include monospace;
+        font-size: $font-size-1;
+        max-width: 100%;
+        overflow-x: scroll;
+        background: $black;
+        color: $white;
+        padding: 1rem;
+        
+        @include breakpoint(bigger) {
+            border-radius: 4px;
+            border: 1px solid darken($white, 30%);
+        }
     }
 }

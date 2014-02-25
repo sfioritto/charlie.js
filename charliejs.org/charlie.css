@@ -1,24 +1,86 @@
+*, *:before, *:after {
+  box-sizing: border-box; }
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Whitney SSm A', 'Whitney SSm B', georgia, serif;
+  font-family: georgia;
+  font-weight: 400; }
+
 h1, h2, figure {
   margin: 0; }
 
 h1, h2 {
   text-align: center;
-  margin: 1rem 0; }
+  margin: 2rem 0;
+  color: #eeeeee; }
 
 h1 {
-  font-family: 'Landmark Dimensional A', 'Landmark Dimensional B';
+  font-family: 'Landmark Dimensional A', 'Landmark Dimensional B', verdana, sans-serif;
+  font-family: verdana;
   font-weight: 400;
   font-style: normal;
   font-size: 2.6154rem;
   text-align: center; }
+  @media (min-width: 600px) {
+    h1 {
+      font-size: 4.2308rem; } }
 
 h2 {
-  font-family: 'Landmark Inline A', 'Landmark Inline B';
+  font-family: 'Landmark Regular A', 'Landmark Regular B', verdana, sans-serif;
+  font-family: verdana;
   font-weight: 400;
   font-style: normal;
   font-size: 1.6154rem; }
+  @media (min-width: 600px) {
+    h2 {
+      font-family: 'Landmark Inline A', 'Landmark Inline B', verdana, sans-serif;
+      font-family: verdana;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 2.6154rem; } }
 
-header figure {
+header {
+  background: #222222; }
+  header figure {
+    position: relative;
+    background: white;
+    width: 100%;
+    text-align: center;
+    padding: 1rem 0; }
+  header figure img {
+    max-width: 100%;
+    width: 800px; }
+
+.social {
+  padding: 1rem 1rem;
   text-align: center; }
-header figure img {
-  max-width: 800px; }
+
+main {
+  width: 100%;
+  max-width: 792px;
+  margin: 0 auto; }
+  main p {
+    margin: 1rem 0;
+    line-height: 1.4em; }
+
+.summary {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; }
+  .summary .step {
+    flex: 1 0 auto;
+    margin: 0 1rem; }
+  .summary pre {
+    font-family: Consolas, 'Liberation Mono', Courier, monospace;
+    font-size: 1rem;
+    max-width: 100%;
+    overflow-x: scroll;
+    background: #222222;
+    color: #eeeeee;
+    padding: 1rem; }
+    @media (min-width: 792px) {
+      .summary pre {
+        border-radius: 4px;
+        border: 1px solid #a2a2a2; } }

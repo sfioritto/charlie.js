@@ -12,19 +12,67 @@
   </head>
 
   <body>
+
+    <div id="fb-root"></div>
+
     <header>
       <figure>
         <img src="charlie.jpg" />
       </figure>
       <h1>Charlie.js</h1>
-      <h2>Sync CSS animations with video</h2>
+      <h2>Sync CSS animations with video</h2>      
       <div class="social">
+        <a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github-camo.global.ssl.fastly.net/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-text="Sync CSS animations with video using Charlie.js" data-via="sfioritto">Tweet</a>
+        <div class="fb-like" data-href="http://charliejs.org" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false"></div>
       </div>
     </header>
     <main>
       <div class="intro">
+        <p>
+          HTML5 video and CSS3 animations &mdash; Charlie.js is what happens when you mix the two together.
+        </p>
+        <p>
+          Synchronize animations to specific times in an embedded video with an easy to use API. If the video pauses, the animations pause. 
+        </p>
+          <p>
+            See the <a href="http://www.apple.com/mac-pro/">Mac Pro marketing page</a> and this <a href="http://www.sketchingwithcss.com/flexbox/">flexbox tutorial</a> for examples of what you can do when you combine animations with video.
+        </p>
       </div>
+
       <div class="summary">
+        <div class="step">
+          <h3>1. Attach to a video</h3>
+        <!-- javascript -->
+<pre>CHARLIE.setup(video);</pre>
+        <!-- end javascript -->
+        </div>
+
+        <!-- css sample -->
+        <div class="step">
+          <h3>2. Create some animations</h3>
+<pre>.grow {
+    animation-name: grow;
+    animation-duration: 4s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes grow {
+   ...
+}
+</pre>
+<!-- end css sample -->
+        </div>
+
+        <div class="step">
+          <h3>3. Link it to your HTML with data attributes</h3>
+<!-- html sample -->
+<pre>&lt;div class="charlie" data-animations="grow, shrink" data-times="40.2, 90.3"&gt;
+&lt;/div&gt;
+</pre>
+<! -- end html sample -->
+        </div>
+
       </div>
       <div class="demo">
       </div>
@@ -35,5 +83,21 @@
       <div class="readme">
       </div>
     </main>
+
+    <!-- facebook -->
+    <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+    <!-- end facebook -->
+
+    <!-- twitter -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+    <!-- end twitter -->
+
+
   </body>
 </html>
