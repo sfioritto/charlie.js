@@ -30,14 +30,12 @@
     <main>
       <div class="intro">
         <p>
-          HTML5 video and CSS3 animations &mdash; Charlie.js is what happens when you mix the two together.
+          Charlie.js is a small, open source framework for synchronizing video and CSS3 animations.
         </p>
         <p>
-          Synchronize animations to specific times in an embedded video with an easy to use API. If the video pauses, the animations pause. 
+          You can synchronize animations to specific times in an embedded video with an easy to use API. If the video pauses, the animations pause. 
         </p>
-          <p>
-            See the <a href="http://www.apple.com/mac-pro/">Mac Pro marketing page</a> and this <a href="http://www.sketchingwithcss.com/flexbox/">flexbox tutorial</a> for examples of what you can do when you combine animations with video.
-        </p>
+        <p class="button"><button>Download on GitHub</button></p>
       </div>
 
       <div class="summary">
@@ -74,11 +72,154 @@
         </div>
 
       </div>
+
+
       <div class="demo">
         <h2>Demo</h2>
         <figure>
-          <img src="demo.png"></img>
+          <a href="http://www.sketchingwithcss.com/flexbox/"><img src="demo.png"/></a>
+          <figcaption>(This will take you to another site and won't run on mobile).</figcaption>
         </figure>
+      </div>
+
+      <div class="readme">
+
+        <h2>Documentation</h2>
+        <h3>Create your CSS3 animations with the naming convention</h3>
+
+        <p>
+          The animation properties should be defined with a class selector that
+          matches the name of the corresponding keyframe.
+        </p>
+
+        <pre>
+.grow {
+	animation-name: grow;
+	animation-duration: 4s;
+	animation-timing-function: linear;
+	animation-iteration-count: 1;
+	animation-direction: normal;
+    animation-fill-mode: forwards;
+}
+
+@keyframes grow {
+   0% {
+       width: 5px;
+       height: 5px;
+   }
+
+   100% {
+       width: 50px;
+       height: 50px;
+   }
+}
+        </pre>
+
+        <p>
+          Notice the class name matches the animation-name matches the keyframes
+          name.
+        </p>
+        
+        <h3>Add the "charlie" class, data-animations and data-times</h3>
+        
+        <p>
+          In your markup add a 'charlie' class to any element that you will
+          animate. Then add two data attributes: data-animations and data-times.
+        </p>
+        
+        <ul>
+          <li>
+            data-animations - A comma separated list of the animation names that
+            will run on this element. The names should be the same as the
+          class/keyframe combo in your stylesheet.</li>
+          
+          <li>
+            data-times - A comma separated list of times when the animations
+            will run. These times are synced with the video. There must be one
+            time for every animation. Times are in seconds with a resolution to
+            a tenth of a second.
+          </li>
+        </ul>
+
+        <p>e.g.</p>
+
+        <pre>
+&lt;div class="charlie" 
+data-animations="grow, shrink" data-times="40.2, 90.3"&gt;
+...
+&lt;/div&gt;
+        </pre>
+        
+        <h3>Include the right javascript</h3>
+
+        <p>
+          Within the demo directory of this project is a charlie.js which
+          contains charlie.js plus all of its dependencies. You can use this
+          version if you want. Or you can include charlie.js and it's
+          dependencies individually.
+        </p>
+         
+        <p>
+          You must include underscore.js and the polyfills.js file in this
+          repository.
+        </p>
+
+        <h3>Make the CHARLIE.setup(video) call</h3>
+         
+        <p>
+          Somewhere in your javascript get a reference to the video element you
+          will sync with the animations. Then call CHARLIE.setup.
+        </p>
+
+        <pre>
+CHARLIE.setup(video);
+        </pre>
+
+        <h3>Include Javascript callbacks with CHARLIE.addCallback</h3>
+
+        <p>
+          For fancier and more complicated use cases you will need more than
+          just CSS3 animations. There will be other state on your page you need
+          to maintain, so you can add Javascript callbacks at arbitrary times.
+        </p>
+
+        <pre>
+CHARLIE.addCallback(function(){
+    // do stuff in here
+}, 43.2);
+        </pre>
+
+        <p>
+          Charlie.js does a pretty good job of maintaining animation state and
+          keeping everything in sync as you jump around a video, but this is not
+          the case with your Javascript callbacks.
+        </p>
+        <p>
+          As of now, if you add a bunch of callbacks that affect the state of
+          the page, you will have to manually handle keeping the state in sync if a user starts jumping
+          around in the video.
+        </p>
+        <p>
+        So you will need to add event listeners to the video by
+        hand. Eventually, Charlie.js might add some better mechanisms to help,
+        but you're on your own for now.
+        </p>
+
+        <h3>Gotchas</h3>
+        
+        <ul>
+          <li>
+            There is a bug in Chrome where the cssRules property on a stylesheet
+            is null if you load the stylesheet using the file: protocol. So
+            you'll have to serve up the demo, you can't just open the file.
+          </li>
+          <li>
+            Does not respond to framerate changes. So if the video stutters or
+            you want to slow down the rate of the video, the animations will be
+            out of sync.
+          </li>
+        </ul>
+        
       </div>
 
       <div class="author">
@@ -98,8 +239,6 @@
 
       </div>
 
-      <div class="readme">
-      </div>
     </main>
 
     <!-- facebook -->

@@ -84,11 +84,12 @@ h1 {
 }
 
 h2 {
-    @include landmark-regular;
-
+    @include landmark-inline;
+    text-align: center;
     font-size: $font-size-2;
+
     @include breakpoint(big) {
-        @include landmark-inline;
+        @include landmark-dimensional;
         font-size: $font-size-3;
     }
 }
@@ -98,21 +99,55 @@ h3 {
     font-size: $font-size-2;
 }
 
+figure {
+    max-width: 100%;
+    img {
+        width: 100%;
+    }
+    figcaption {
+        text-align: center;
+    }
+}
+
+pre {
+    @include monospace;
+    font-size: $font-size-1;
+    max-width: 100%;
+    overflow-x: scroll;
+    padding: 1rem;
+    
+    @include breakpoint(bigger) {
+        border-radius: 4px;
+        border: 1px solid darken($white, 30%);
+    }
+}
+
+.button {
+    text-align: center;
+    margin: 2rem 0;
+    button {
+        @include landmark-regular;
+        font-size: $font-size-2;
+    }
+}
+
+
 header {
 
     figure {
         margin: 1rem auto;
-        max-width: 100%;
         width: 800px;
-        
-        img {
-            width: 100%;
-        }
     }
 
     h2 {
-        text-align: center;
+        @include landmark-inline;
+        font-size: $font-size-2;
+        @include breakpoint(big) {
+            @include landmark-inline;
+            font-size: $font-size-3;
+        }
     }
+
 }
 
 .social {
@@ -147,21 +182,14 @@ main {
         }
 
     }
-    pre {
-        @include monospace;
-        font-size: $font-size-1;
-        max-width: 100%;
-        overflow-x: scroll;
-        padding: 1rem;
-        
-        @include breakpoint(bigger) {
-            border-radius: 4px;
-            border: 1px solid darken($white, 30%);
-        }
-    }
 
 }
 
+
+.demo {
+    h2 {
+    }
+}
 
 .author {
     margin: 2rem auto;
@@ -169,9 +197,6 @@ main {
         float: left;
         width: 25%;
         border: 1px solid $black;
-        img {
-            width: 100%;
-        }
     }
 
     p {
