@@ -15,30 +15,38 @@ $white: #eee;
   }
 }
 
+@mixin clearfix {
+    &::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
 @mixin landmark-dimensional {
     font-family: 'Landmark Dimensional A', 'Landmark Dimensional B', verdana, sans-serif; 
-    font-family: verdana;
+//    font-family: verdana;
     font-weight: 400; 
     font-style: normal;
 }
 
 @mixin landmark-inline {
     font-family: 'Landmark Inline A', 'Landmark Inline B', verdana, sans-serif;
-    font-family: verdana;
+//    font-family: verdana;
     font-weight: 400;
     font-style: normal;
 }
 
 @mixin landmark-regular {
     font-family: 'Landmark Regular A', 'Landmark Regular B', verdana, sans-serif;
-    font-family: verdana;
+//    font-family: verdana;
     font-weight: 400;
     font-style: normal;
 }
 
 @mixin whitney {
     font-family: 'Whitney SSm A', 'Whitney SSm B', georgia, serif;
-    font-family: georgia;
+//    font-family: georgia;
     font-weight: 400; 
 }
 
@@ -61,9 +69,7 @@ h1, h2, figure {
 }
 
 h1, h2 {
-    text-align: center;
     margin: 2rem 0;
-    color: $white;
 }
 
 h1 {
@@ -87,19 +93,25 @@ h2 {
     }
 }
 
+h3 {
+    @include landmark-regular;
+    font-size: $font-size-2;
+}
+
 header {
-    background: $black;
 
     figure {
-        position: relative;
-        background: white;
-        width: 100%;
-        text-align: center;
-        padding: 1rem 0;
-    }
-    figure img {
+        margin: 1rem auto;
         max-width: 100%;
         width: 800px;
+        
+        img {
+            width: 100%;
+        }
+    }
+
+    h2 {
+        text-align: center;
     }
 }
 
@@ -120,20 +132,26 @@ main {
 }
 
 .summary {
-    display: flex;
+    
+    @include clearfix;
+
+/*    display: flex;
     justify-content: space-around;
-    flex-wrap: wrap;
+    flex-wrap: wrap;*/
+
     .step {
-        flex: 1 0 auto;
+//        flex: 1 0 auto;
         margin: 0 1rem;
+        @include breakpoint(bigger) {
+            float: left;
+        }
+
     }
     pre {
         @include monospace;
         font-size: $font-size-1;
         max-width: 100%;
         overflow-x: scroll;
-        background: $black;
-        color: $white;
         padding: 1rem;
         
         @include breakpoint(bigger) {
@@ -141,4 +159,35 @@ main {
             border: 1px solid darken($white, 30%);
         }
     }
+
+}
+
+
+.author {
+    margin: 2rem auto;
+    figure {
+        float: left;
+        width: 25%;
+        border: 1px solid $black;
+        img {
+            width: 100%;
+        }
+    }
+
+    p {
+        float: left;
+        padding-left: 1rem;
+        width: 50%;
+    }
+
+    p:first-of-type {
+        margin-top: 0;
+    }
+
+}
+
+.author::after {
+    display: table;
+    content: " ";
+    clear: both;
 }

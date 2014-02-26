@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    
+    <!-- Basic meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+
+    <title>Demo</title>
+    <link rel="stylesheet" type="text/css" href="reset.css" />
+    <link rel="stylesheet" type="text/css" href="demo.css" />
+  </head>
+
+  <body>
+
+<video id="video" controls="" preload="none" poster="http://media.w3.org/2010/05/sintel/poster.png" muted>
+      <source id="mp4" src="http://media.w3.org/2010/05/sintel/trailer.mp4" type="video/mp4">
+      <source id="webm" src="http://media.w3.org/2010/05/sintel/trailer.webm" type="video/webm">
+      <source id="ogv" src="http://media.w3.org/2010/05/sintel/trailer.ogv" type="video/ogg">
+      <p>Your user agent does not support the HTML5 Video element.</p>
+</video>
+
+<!-- 
+<video id="video" src="http://vid.ly/4m4e2n?content=video" controls="" preload="none" muted>
+-->
+
+<p>Your browser does not support the HTML5 Video element.</p>
+</video>
+
+    <div id="slides">
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="0">One</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="0"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="5.5">Two</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="5.5"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="8">Three</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="8"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="12">Four</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="12"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="16">Five</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="16"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="20">Six</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="20"></h2>
+      </div>
+      
+      <div>
+        <h2 class="charlie" data-animations="fade" data-times="24">Seven</h2>
+        <h2 class="charlie circle" data-animations="grow" data-times="24"></h2>
+      </div>
+      
+    </div>
+    <div id="count">
+
+    </div>
+    
+    <script src="charlie.js"></script>
+    <script>
+    CHARLIE.setup(document.getElementById("video"));
+    </script>
+  </body>
+</html>
