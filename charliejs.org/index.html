@@ -50,10 +50,9 @@
         </div>
 
         <div class="step attach">
-          <h3>3. Link it to your HTML with data attributes</h3>
+          <h3>3. Link it with data attributes</h3>
         <pre>
-&lt;div class="charlie" data-animations="bounce" data-times="40.2"&gt;
-        </pre>
+&lt;div class="charlie" data-animations="bounce" data-times="40.2"&gt;</pre>
 
         </div>
 
@@ -98,8 +97,7 @@
        width: 50px;
        height: 50px;
    }
-}
-        </pre>
+}</pre>
 
         <p>
           Notice the class name matches the animation-name matches the keyframes
@@ -133,8 +131,7 @@
 &lt;div class="charlie" 
 data-animations="grow, shrink" data-times="40.2, 90.3"&gt;
 ...
-&lt;/div&gt;
-        </pre>
+&lt;/div&gt;</pre>
         
         <h3>Include the right javascript</h3>
 
@@ -158,8 +155,7 @@ data-animations="grow, shrink" data-times="40.2, 90.3"&gt;
         </p>
 
         <pre>
-CHARLIE.setup(video);
-        </pre>
+CHARLIE.setup(video);</pre>
 
         <h3>Include Javascript callbacks with CHARLIE.addCallback</h3>
 
@@ -172,8 +168,7 @@ CHARLIE.setup(video);
         <pre>
 CHARLIE.addCallback(function(){
     // do stuff in here
-}, 43.2);
-        </pre>
+}, 43.2);</pre>
 
         <p>
           Charlie.js does a pretty good job of maintaining animation state and

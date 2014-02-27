@@ -40,7 +40,10 @@ h3 {
   font-family: 'Landmark Regular A', 'Landmark Regular B', verdana, sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 1.6154rem; }
+  font-size: 1rem; }
+  @media (min-width: 600px) {
+    h3 {
+      font-size: 1.6154rem; } }
 
 figure {
   max-width: 100%; }
@@ -54,11 +57,10 @@ pre {
   font-size: 1rem;
   max-width: 100%;
   overflow-x: scroll;
-  padding: 1rem; }
-  @media (min-width: 792px) {
-    pre {
-      border-radius: 4px;
-      border: 1px solid #a2a2a2; } }
+  padding: 1rem;
+  border-radius: 4px;
+  border: 1px solid #a2a2a2;
+  background: #ddd; }
 
 .button {
   text-align: center;
@@ -104,50 +106,47 @@ main {
 .summary {
   /*    display: flex;
       justify-content: space-around;
-      flex-wrap: wrap;*/
-  text-align: center; }
-  .summary::after {
-    content: "";
-    display: table;
-    clear: both; }
+      flex-wrap: wrap;*/ }
   .summary .step {
-    text-align: center;
-    border-radius: 5px;
-    margin: 0 1rem;
-    border: 1px solid #222222;
-    padding: 1rem;
     margin: 1rem 0; }
     @media (min-width: 792px) {
       .summary .step {
+        text-align: center;
+        margin: 0 1rem;
         display: inline-block; } }
-  .summary .step.animated h3 {
-    -webkit-animation-delay: 1s;
-    -webkit-animation-duration: 3s;
-    -webkit-animation-name: bounce;
-    -webkit-animation-timing-function: ease-in;
-    -webkit-animation-iteration-count: infinite;
-    -moz-animation-delay: 1s;
-    -moz-animation-duration: 3s;
-    -moz-animation-name: bounce;
-    -moz-animation-timing-function: ease-in;
-    -moz-animation-iteration-count: infinite;
-    animation-delay: 1s;
-    animation-duration: 3s;
-    animation-timing-function: ease-in;
-    animation-name: bounce;
-    animation-iteration-count: infinite;
-    position: relative; }
+  @media (min-width: 600px) {
+    .summary .step.animated h3 {
+      -webkit-animation-delay: 1s;
+      -webkit-animation-duration: 3s;
+      -webkit-animation-name: bounce;
+      -webkit-animation-timing-function: ease-in;
+      -webkit-animation-iteration-count: infinite;
+      -moz-animation-delay: 1s;
+      -moz-animation-duration: 3s;
+      -moz-animation-name: bounce;
+      -moz-animation-timing-function: ease-in;
+      -moz-animation-iteration-count: infinite;
+      animation-delay: 1s;
+      animation-duration: 3s;
+      animation-timing-function: ease-in;
+      animation-name: bounce;
+      animation-iteration-count: infinite;
+      position: relative; } }
   .summary .step.movie {
     margin-right: 1rem; }
     .summary .step.movie h3 {
       display: inline-block;
-      padding-right: 1rem; }
+      margin: 0; }
   @media (min-width: 792px) {
     .summary .step.movie, .summary .step.animated {
       width: 350px; } }
+  .summary .step.attach pre {
+    display: none; }
   @media (min-width: 792px) {
     .summary .step.attach {
-      width: 100%; } }
+      width: 100%; }
+      .summary .step.attach pre {
+        display: block; } }
 
 @-webkit-keyframes bounce {
   0% {
