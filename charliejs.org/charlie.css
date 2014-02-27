@@ -2,7 +2,7 @@
   box-sizing: border-box; }
 
 body {
-  padding: 0;
+  padding: 0 1rem;
   margin: 0;
   font-family: 'Whitney SSm A', 'Whitney SSm B', georgia, serif;
   font-weight: 400; }
@@ -84,44 +84,142 @@ header h2 {
       font-style: normal;
       font-size: 2.6154rem; } }
 
-.social {
-  padding: 1rem 1rem;
-  text-align: center; }
+.social #twitter-widget-0 {
+  display: block;
+  width: 100px;
+  margin: 0 auto 1rem auto; }
+.social .fb-like {
+  display: block;
+  width: 100px !important;
+  margin: 0 auto; }
 
 main {
   width: 100%;
   max-width: 792px;
   margin: 0 auto; }
-  main p {
+  main p, main ul li {
     margin: 1rem 0;
     line-height: 1.4em; }
 
 .summary {
   /*    display: flex;
       justify-content: space-around;
-      flex-wrap: wrap;*/ }
+      flex-wrap: wrap;*/
+  text-align: center; }
   .summary::after {
     content: "";
     display: table;
     clear: both; }
   .summary .step {
-    margin: 0 1rem; }
+    text-align: center;
+    border-radius: 5px;
+    margin: 0 1rem;
+    border: 1px solid #222222;
+    padding: 1rem;
+    margin: 1rem 0; }
     @media (min-width: 792px) {
       .summary .step {
-        float: left; } }
+        display: inline-block; } }
+  .summary .step.animated h3 {
+    -webkit-animation-delay: 1s;
+    -webkit-animation-duration: 3s;
+    -webkit-animation-name: bounce;
+    -webkit-animation-timing-function: ease-in;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-delay: 1s;
+    -moz-animation-duration: 3s;
+    -moz-animation-name: bounce;
+    -moz-animation-timing-function: ease-in;
+    -moz-animation-iteration-count: infinite;
+    animation-delay: 1s;
+    animation-duration: 3s;
+    animation-timing-function: ease-in;
+    animation-name: bounce;
+    animation-iteration-count: infinite;
+    position: relative; }
+  .summary .step.movie {
+    margin-right: 1rem; }
+    .summary .step.movie h3 {
+      display: inline-block;
+      padding-right: 1rem; }
+  @media (min-width: 792px) {
+    .summary .step.movie, .summary .step.animated {
+      width: 350px; } }
+  @media (min-width: 792px) {
+    .summary .step.attach {
+      width: 100%; } }
+
+@-webkit-keyframes bounce {
+  0% {
+    top: 0px; }
+
+  50% {
+    top: 0px; }
+
+  60% {
+    top: -100px; }
+
+  80% {
+    top: 0px; }
+
+  85% {
+    top: -10px; }
+
+  90% {
+    top: 0px; } }
+
+@-moz-keyframes bounce {
+  0% {
+    top: 0px; }
+
+  50% {
+    top: 0px; }
+
+  60% {
+    top: -100px; }
+
+  80% {
+    top: 0px; }
+
+  85% {
+    top: -10px; }
+
+  90% {
+    top: 0px; } }
+
+@keyframes bounce {
+  0% {
+    top: 0px; }
+
+  50% {
+    top: 0px; }
+
+  60% {
+    top: -100px; }
+
+  80% {
+    top: 0px; }
+
+  85% {
+    top: -10px; }
+
+  90% {
+    top: 0px; } }
 
 .author {
   margin: 2rem auto; }
   .author figure {
-    float: left;
-    width: 25%;
     border: 1px solid #222222; }
-  .author p {
-    float: left;
-    padding-left: 1rem;
-    width: 50%; }
-  .author p:first-of-type {
-    margin-top: 0; }
+  @media (min-width: 600px) {
+    .author figure {
+      float: left;
+      width: 25%; }
+    .author p {
+      float: left;
+      padding-left: 1rem;
+      width: 50%; }
+    .author p:first-of-type {
+      margin-top: 0; } }
 
 .author::after {
   display: table;

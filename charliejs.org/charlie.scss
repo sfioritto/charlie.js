@@ -6,6 +6,40 @@ $font-size-5: 6.8462rem;
 $black: #222;
 $white: #eee;
 
+@mixin keyframe ($animation_name) {
+    @-webkit-keyframes $animation_name {
+        @content;
+    }
+ 
+    @-moz-keyframes $animation_name {
+        @content;
+    }
+ 
+    @keyframes $animation_name {
+        @content;
+    }
+}
+
+@mixin animation ($duration, $animation, $timing-function) {
+    -webkit-animation-delay: 1s;
+    -webkit-animation-duration: $duration;
+    -webkit-animation-name: $animation;
+	-webkit-animation-timing-function: $timing-function;
+    -webkit-animation-iteration-count: infinite;
+ 
+    -moz-animation-delay: 1s;
+    -moz-animation-duration: $duration;
+    -moz-animation-name: $animation;
+	-moz-animation-timing-function: $timing-function;
+    -moz-animation-iteration-count: infinite;
+
+    animation-delay: 1s; 
+    animation-duration: $duration;
+	animation-timing-function: $timing-function;
+    animation-name: $animation;
+    animation-iteration-count: infinite;
+}
+
 @mixin breakpoint($point) {
   @if $point == big {
     @media (min-width: 600px) { @content; }
@@ -59,7 +93,7 @@ $white: #eee;
 }
 
 body {
-    padding: 0;
+    padding: 0 1rem;
     margin: 0;
     @include whitney;
 }
@@ -151,8 +185,18 @@ header {
 }
 
 .social {
-    padding: 1rem 1rem;
-    text-align: center;
+
+    #twitter-widget-0 {
+        display: block;
+        width: 100px;
+        margin: 0 auto 1rem auto;
+    }
+
+    .fb-like {
+        display: block;
+        width: 100px !important;
+        margin: 0 auto;
+    }
 }
 
 main {
@@ -160,7 +204,7 @@ main {
     max-width: 792px;
     margin: 0 auto;
     
-    p {
+    p, ul li {
         margin: 1rem 0;
         line-height: 1.4em;
     }
@@ -174,16 +218,71 @@ main {
     justify-content: space-around;
     flex-wrap: wrap;*/
 
+    text-align: center;
+
     .step {
 //        flex: 1 0 auto;
+        text-align: center;
+        border-radius: 5px;
         margin: 0 1rem;
         @include breakpoint(bigger) {
-            float: left;
+            display: inline-block;
         }
+        border: 1px solid $black;
+        padding: 1rem;
+        margin: 1rem 0;
+    }
 
+    .step.animated {
+        h3 {
+            @include animation(3s, bounce, ease-in);
+            position: relative;
+        }
+    }
+
+    .step.movie {
+        margin-right: 1rem;
+        h3 {
+            display: inline-block;
+            padding-right: 1rem;
+        }
+    }
+
+    .step.movie, .step.animated {
+        @include breakpoint(bigger) {
+            width: 350px;
+        }
+    }
+
+    .step.attach {
+        @include breakpoint(bigger) {
+            width: 100%;
+        }
     }
 
 }
+
+@include keyframe (bounce) {
+    0% {
+        top: 0px;
+    }
+    50% {
+        top: 0px;
+    }
+   60% {
+       top: -100px;
+   }
+   80% {
+       top: 0px;
+   }
+   85% {
+       top: -10px;
+   }
+   90% {
+       top: 0px;
+   }
+}
+
 
 
 .demo {
@@ -192,23 +291,29 @@ main {
 }
 
 .author {
+
     margin: 2rem auto;
+
     figure {
-        float: left;
-        width: 25%;
         border: 1px solid $black;
     }
 
-    p {
-        float: left;
-        padding-left: 1rem;
-        width: 50%;
-    }
+    @include breakpoint(big) {
+        figure {
+            float: left;
+            width: 25%;
+        }
 
-    p:first-of-type {
-        margin-top: 0;
+        p {
+            float: left;
+            padding-left: 1rem;
+            width: 50%;
+        }
+        
+        p:first-of-type {
+            margin-top: 0;
+        }
     }
-
 }
 
 .author::after {
