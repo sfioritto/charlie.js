@@ -1,92 +1,10 @@
-$font-size-1: 1rem;
-$font-size-2: 1.6154rem;
-$font-size-3: 2.6154rem;
-$font-size-4: 4.2308rem;
-$font-size-5: 6.8462rem;
+@import 'typography';
+@import 'mixins';
+@import 'layout';
+
 $black: #222;
 $white: #eee;
 
-@mixin keyframe ($animation_name) {
-    @-webkit-keyframes $animation_name {
-        @content;
-    }
- 
-    @-moz-keyframes $animation_name {
-        @content;
-    }
- 
-    @keyframes $animation_name {
-        @content;
-    }
-}
-
-@mixin animation ($duration, $animation, $timing-function) {
-    -webkit-animation-delay: 1s;
-    -webkit-animation-duration: $duration;
-    -webkit-animation-name: $animation;
-	-webkit-animation-timing-function: $timing-function;
-    -webkit-animation-iteration-count: infinite;
- 
-    -moz-animation-delay: 1s;
-    -moz-animation-duration: $duration;
-    -moz-animation-name: $animation;
-	-moz-animation-timing-function: $timing-function;
-    -moz-animation-iteration-count: infinite;
-
-    animation-delay: 1s; 
-    animation-duration: $duration;
-	animation-timing-function: $timing-function;
-    animation-name: $animation;
-    animation-iteration-count: infinite;
-}
-
-@mixin breakpoint($point) {
-  @if $point == big {
-    @media (min-width: 600px) { @content; }
-  }
-  @else if $point == bigger {
-    @media (min-width: 792px) { @content; }
-  }
-}
-
-@mixin clearfix {
-    &::after {
-        content: "";
-        display: table;
-        clear: both;
-    }
-}
-
-@mixin landmark-dimensional {
-    font-family: 'Landmark Dimensional A', 'Landmark Dimensional B', verdana, sans-serif; 
-//    font-family: verdana;
-    font-weight: 400; 
-    font-style: normal;
-}
-
-@mixin landmark-inline {
-    font-family: 'Landmark Inline A', 'Landmark Inline B', verdana, sans-serif;
-//    font-family: verdana;
-    font-weight: 400;
-    font-style: normal;
-}
-
-@mixin landmark-regular {
-    font-family: 'Landmark Regular A', 'Landmark Regular B', verdana, sans-serif;
-//    font-family: verdana;
-    font-weight: 400;
-    font-style: normal;
-}
-
-@mixin whitney {
-    font-family: 'Whitney SSm A', 'Whitney SSm B', georgia, serif;
-//    font-family: georgia;
-    font-weight: 400; 
-}
-
-@mixin monospace {
-    font-family: Consolas, 'Liberation Mono', Courier, monospace;
-}
 
 *, *:before, *:after {
     box-sizing: border-box;
@@ -140,6 +58,7 @@ figure {
     max-width: 100%;
     img {
         width: 100%;
+        vertical-align: bottom;
     }
     figcaption {
         text-align: center;
@@ -213,19 +132,7 @@ main {
 
 .summary {
     
-/*    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;*/
-
     .step {
-//        flex: 1 0 auto;
-
-
-        @include breakpoint(bigger) {
-            text-align: center;
-            margin: 0 1rem;
-            display: inline-block;
-        }
         margin: 1rem 0;
     }
 
@@ -245,24 +152,22 @@ main {
         }
     }
 
-    .step.movie, .step.animated {
-        @include breakpoint(bigger) {
-            width: 350px;
-        }
-    }
-
     .step.attach {
         pre {
             display: none;
         }
-        @include breakpoint(bigger) {
-            pre {
-                display: block;
-            }
-            width: 100%;
-        }
     }
 
+}
+
+.demo {
+    figure {
+        max-width: 100%;
+        img {
+            width: 100%;
+            vertical-align: bottom;
+        }
+    }
 }
 
 @include keyframe (zip) {
@@ -280,32 +185,9 @@ main {
 
 .author {
 
-    margin: 2rem auto;
-
     figure {
         border: 1px solid $black;
     }
 
-    @include breakpoint(big) {
-        figure {
-            float: left;
-            width: 25%;
-        }
-
-        p {
-            float: left;
-            padding-left: 1rem;
-            width: 50%;
-        }
-        
-        p:first-of-type {
-            margin-top: 0;
-        }
-    }
 }
 
-.author::after {
-    display: table;
-    content: " ";
-    clear: both;
-}

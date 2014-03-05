@@ -1,0 +1,31 @@
+
+.author {
+    
+    margin: 2rem auto;
+
+    figure {
+        max-width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @include breakpoint(big) {
+        width: 500px;
+        @include clearfix;
+        h2 {
+            width: 100%;
+        }
+        figure {
+            width: 200px;
+        }
+        p {
+            padding-left: 1rem;
+            width: 300px;
+            margin: 0 0 1rem 0;
+        }
+
+        figure, p {
+            float: left;
+        }
+    }
+}
