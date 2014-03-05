@@ -232,17 +232,16 @@ main {
     .step.animated {
         h3 {
             @include breakpoint(big) {
-                @include animation(3s, bounce, ease-in);
-                position: relative;
+                @include animation(5s, zip, ease-in);
             }
         }
     }
 
     .step.movie {
-        margin-right: 1rem;
         h3 {
             display: inline-block;
             margin: 0;
+            padding-right: 1rem;
         }
     }
 
@@ -266,25 +265,17 @@ main {
 
 }
 
-@include keyframe (bounce) {
+@include keyframe (zip) {
     0% {
-        top: 0px;
+        -webkit-transform: rotatey(0deg);
     }
-    50% {
-        top: 0px;
+    20% {
+        -webkit-transform: rotatey(45deg);
     }
-   60% {
-       top: -100px;
-   }
-   80% {
-       top: 0px;
-   }
-   85% {
-       top: -10px;
-   }
-   90% {
-       top: 0px;
-   }
+    30% {
+        -webkit-transform: rotatey(0deg);
+    }
+
 }
 
 .author {

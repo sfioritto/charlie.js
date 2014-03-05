@@ -117,26 +117,24 @@ main {
   @media (min-width: 600px) {
     .summary .step.animated h3 {
       -webkit-animation-delay: 1s;
-      -webkit-animation-duration: 3s;
-      -webkit-animation-name: bounce;
+      -webkit-animation-duration: 5s;
+      -webkit-animation-name: zip;
       -webkit-animation-timing-function: ease-in;
       -webkit-animation-iteration-count: infinite;
       -moz-animation-delay: 1s;
-      -moz-animation-duration: 3s;
-      -moz-animation-name: bounce;
+      -moz-animation-duration: 5s;
+      -moz-animation-name: zip;
       -moz-animation-timing-function: ease-in;
       -moz-animation-iteration-count: infinite;
       animation-delay: 1s;
-      animation-duration: 3s;
+      animation-duration: 5s;
       animation-timing-function: ease-in;
-      animation-name: bounce;
-      animation-iteration-count: infinite;
-      position: relative; } }
-  .summary .step.movie {
-    margin-right: 1rem; }
-    .summary .step.movie h3 {
-      display: inline-block;
-      margin: 0; }
+      animation-name: zip;
+      animation-iteration-count: infinite; } }
+  .summary .step.movie h3 {
+    display: inline-block;
+    margin: 0;
+    padding-right: 1rem; }
   @media (min-width: 792px) {
     .summary .step.movie, .summary .step.animated {
       width: 350px; } }
@@ -148,62 +146,35 @@ main {
       .summary .step.attach pre {
         display: block; } }
 
-@-webkit-keyframes bounce {
+@-webkit-keyframes zip {
   0% {
-    top: 0px; }
+    -webkit-transform: rotatey(0deg); }
 
-  50% {
-    top: 0px; }
+  20% {
+    -webkit-transform: rotatey(45deg); }
 
-  60% {
-    top: -100px; }
+  30% {
+    -webkit-transform: rotatey(0deg); } }
 
-  80% {
-    top: 0px; }
-
-  85% {
-    top: -10px; }
-
-  90% {
-    top: 0px; } }
-
-@-moz-keyframes bounce {
+@-moz-keyframes zip {
   0% {
-    top: 0px; }
+    -webkit-transform: rotatey(0deg); }
 
-  50% {
-    top: 0px; }
+  20% {
+    -webkit-transform: rotatey(45deg); }
 
-  60% {
-    top: -100px; }
+  30% {
+    -webkit-transform: rotatey(0deg); } }
 
-  80% {
-    top: 0px; }
-
-  85% {
-    top: -10px; }
-
-  90% {
-    top: 0px; } }
-
-@keyframes bounce {
+@keyframes zip {
   0% {
-    top: 0px; }
+    -webkit-transform: rotatey(0deg); }
 
-  50% {
-    top: 0px; }
+  20% {
+    -webkit-transform: rotatey(45deg); }
 
-  60% {
-    top: -100px; }
-
-  80% {
-    top: 0px; }
-
-  85% {
-    top: -10px; }
-
-  90% {
-    top: 0px; } }
+  30% {
+    -webkit-transform: rotatey(0deg); } }
 
 .author {
   margin: 2rem auto; }
