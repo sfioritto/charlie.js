@@ -136,7 +136,7 @@ main {
         margin: 1rem 0;
     }
 
-    .step.animated {
+    .animated {
         h3 {
             @include breakpoint(big) {
                 @include animation(5s, zip, ease-in);
@@ -144,7 +144,7 @@ main {
         }
     }
 
-    .step.movie {
+    .movie {
         h3 {
             display: inline-block;
             margin: 0;
@@ -152,7 +152,7 @@ main {
         }
     }
 
-    .step.attach {
+    .attach {
         pre {
             display: none;
         }

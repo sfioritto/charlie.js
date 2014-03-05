@@ -1,3 +1,7 @@
+main > div {
+  margin: 4rem auto;
+  max-width: 45em; }
+
 .author {
   margin: 2rem auto; }
   .author figure {
@@ -21,6 +25,25 @@
         margin: 0 0 1rem 0; }
       .author figure, .author p {
         float: left; } }
+
+.summary {
+  margin-left: auto;
+  margin-right: auto; }
+  @media (min-width: 792px) {
+    .summary {
+      display: flex;
+      flex-wrap: wrap; }
+      .summary .step {
+        flex: 1 0 50%; }
+      .summary .movie {
+        display: flex;
+        align-items: center; }
+      .summary .step.attach {
+        width: 100%;
+        flex: 1 0 auto;
+        text-align: center; }
+        .summary .step.attach pre {
+          display: block; } }
 
 *, *:before, *:after {
   box-sizing: border-box; }
@@ -131,7 +154,7 @@ main {
 .summary .step {
   margin: 1rem 0; }
 @media (min-width: 600px) {
-  .summary .step.animated h3 {
+  .summary .animated h3 {
     -webkit-animation-delay: 1s;
     -webkit-animation-duration: 5s;
     -webkit-animation-name: zip;
@@ -147,11 +170,11 @@ main {
     animation-timing-function: ease-in;
     animation-name: zip;
     animation-iteration-count: infinite; } }
-.summary .step.movie h3 {
+.summary .movie h3 {
   display: inline-block;
   margin: 0;
   padding-right: 1rem; }
-.summary .step.attach pre {
+.summary .attach pre {
   display: none; }
 
 .demo figure {

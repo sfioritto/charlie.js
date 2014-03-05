@@ -1,3 +1,9 @@
+main {
+    > div {
+        margin: 4rem auto;
+        max-width: 45em;
+    }
+}
 
 .author {
     
@@ -26,6 +32,31 @@
 
         figure, p {
             float: left;
+        }
+    }
+}
+
+.summary {
+    margin-left: auto;
+    margin-right: auto;
+
+    @include breakpoint(bigger){
+        display: flex;
+        flex-wrap: wrap;
+        .step {
+            flex: 1 0 50%;
+        }
+        .movie {
+            display: flex;
+            align-items: center;
+        }
+        .step.attach {
+            width: 100%;
+            flex: 1 0 auto;
+            text-align: center;
+            pre {
+                display: block;
+            }
         }
     }
 }
